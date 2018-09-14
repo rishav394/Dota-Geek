@@ -38,16 +38,19 @@ namespace Dota_Geek
 
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
+
+            await Task.Delay(-1);
         }
 
         private Task ClientReady()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
         private Task ClientLog(LogMessage arg)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(arg.Message);
+            return Task.CompletedTask;
         }
     }
 }

@@ -20,21 +20,22 @@ namespace Dota_Geek
 
             if (File.Exists("Resources/Config.json"))
             {
-                Bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText("Config.json"));
+                Bot = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText("Resources/Config.json"));
             }
             else
             {
                 Bot = new BotConfig
                 {
-                    Token = string.Empty,
+                    Token = null,
                     PrefixDictionary = new Dictionary<ulong, string>()
                 };
+                Save();
             }
         }
 
         public static void Save()
         {
-            var json = JsonConvert.SerializeObject(Bot);
+            var json = JsonConvert.SerializeObject(Bot, Formatting.Indented);
             File.WriteAllText("Resources/Config.json", json);
         }
 

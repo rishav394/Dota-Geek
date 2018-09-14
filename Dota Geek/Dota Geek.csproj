@@ -10,4 +10,16 @@
     <PackageReference Include="Discord.Net" Version="2.0.0-beta2-00988" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="WebsitesScreenshot">
+      <HintPath>D:\Websites_Screenshot_DLL\WebsitesScreenshot.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DataTypes\Heroes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
