@@ -57,6 +57,8 @@ namespace Dota_Geek
             if (msg.HasStringPrefix(currentPrefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
+                context.Channel.EnterTypingState();
+
                 var result =
                     await _service.ExecuteAsync(context, msg.Content.Substring(currentPrefix.Length), _services);
 

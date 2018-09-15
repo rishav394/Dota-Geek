@@ -21,17 +21,56 @@ namespace Dota_Geek.Modules
             {
                 var url = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}";
                 var json = client.DownloadString(url);
-                var obj = JsonConvert.DeserializeObject<PlayerProfile>(json);
+                PlayerProfile obj = JsonConvert.DeserializeObject<PlayerProfile>(json);
+                
 
-                dynamic winLoss = WinTask(accountId);
+                var winLoss = WinTask(accountId);
                 var win = winLoss.win;
                 var lose = winLoss.lose;
                 // TODO : something
             }
+
+            await ReplyAsync("done");
         }
 
-        [Command("win rate", RunMode = RunMode.Async)]
-        public dynamic WinTask(string accountId)
+        [Command("match", RunMode = RunMode.Async)]
+        [Alias("matches", "match data")]
+        public async Task MatchTask(long matchId)
+        {
+            using (var client = new WebClient())
+            {
+                var url = $"https://api.opendota.com/api/matches/{matchId}";
+                var json = client.DownloadString(url);
+                var obj = IndividualMatchData.FromJson(json);
+
+                var my = "```" +
+                         "Player Name".PadRight(20) +
+                         "Hero Name".PadRight(20) +
+                         "Kills".PadRight(7) +
+                         "Death".PadRight(7) +
+                         "Assists".PadRight(7) +
+                         "XPM".PadRight(6) +
+                         "GPM".PadRight(6) + "\n";
+                for (var i = 0; i < 73; i++)
+                    my += "_";
+                my += "\n";
+                foreach (var dataPlayer in obj.Players)
+                    my += (dataPlayer.Personaname ?? "Unknown").Truncate(15).PadRight(20) +
+                          dataPlayer.HeroId.HeroName().PadRight(20) +
+                          dataPlayer.Kills.ToString().PadRight(7) +
+                          dataPlayer.Deaths.ToString().PadRight(7) +
+                          dataPlayer.Assists.ToString().PadRight(7) +
+                          dataPlayer.XpPerMin.ToString().PadRight(6) +
+                          dataPlayer.GoldPerMin.ToString().PadRight(6) +
+                          "\n";
+
+                my += "```";
+
+                await ReplyAsync(my);
+            }
+        }
+
+        private dynamic WinTask(string accountId)
         {
             using (var client = new WebClient())
             {
@@ -56,7 +95,6 @@ namespace Dota_Geek.Modules
                 for (var i = 1; i <= 67; i++) my += "_";
                 my += "\n";
                 foreach (var recentMatches in recent)
-                {
                     my += recentMatches.HeroId.HeroName().PadRight(20, ' ')
                           + recentMatches.Kills.ToString().PadRight(8, ' ')
                           + recentMatches.Deaths.ToString().PadRight(8, ' ')
@@ -65,7 +103,6 @@ namespace Dota_Geek.Modules
                           + recentMatches.GoldPerMin.ToString().PadRight(8, ' ')
                           + recentMatches.MatchId
                           + "\n";
-                }
 
                 my += "```";
                 await ReplyAsync(my);
@@ -134,4 +171,4 @@ namespace Dota_Geek.Modules
 }
 
 
-// TODO " RECENT MATCHES AND TEAM ID
+// TODO : RECENT MATCHES AND TEAM ID
