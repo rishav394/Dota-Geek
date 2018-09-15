@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
@@ -21,7 +20,6 @@ namespace Dota_Geek
             _client = currentClient;
 
             _services = new ServiceCollection()
-                .AddSingleton(_client)
                 .BuildServiceProvider();
 
             _service = new CommandService();
@@ -35,10 +33,7 @@ namespace Dota_Geek
             var msg = (SocketUserMessage) s;
             var context = new SocketCommandContext(_client, msg);
 
-            if (context.User.IsBot || context.IsPrivate)
-            {
-                return;
-            }
+            if (context.User.IsBot || context.IsPrivate) return;
 
             var currentPrefix = "$";
 
@@ -57,14 +52,15 @@ namespace Dota_Geek
             if (msg.HasStringPrefix(currentPrefix, ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                context.Channel.EnterTypingState();
+                await context.Channel.TriggerTypingAsync();
 
                 var result =
-                    await _service.ExecuteAsync(context, msg.Content.Substring(currentPrefix.Length), _services);
+                    await _service.ExecuteAsync(context, argPos, _services);
 
                 if (!result.IsSuccess)
                 {
-                    Console.WriteLine(result.Error + "\n" + result.ErrorReason);
+                    Console.WriteLine("An error occured");
+                    Console.WriteLine(result.ErrorReason);
                 }
             }
         }

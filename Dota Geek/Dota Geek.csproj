@@ -11,13 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="WebsitesScreenshot">
-      <HintPath>D:\Websites_Screenshot_DLL\WebsitesScreenshot.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="DataTypes\Heroes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataTypes\Medals.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

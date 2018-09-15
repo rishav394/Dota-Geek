@@ -4,15 +4,14 @@
 //
 //    var individualMatchData = IndividualMatchData.FromJson(jsonString);
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace Dota_Geek.DataTypes.OpenDota
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-
     public partial class IndividualMatchData
     {
         [JsonProperty("match_id", NullValueHandling = NullValueHandling.Ignore)]
@@ -36,8 +35,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("dire_score", NullValueHandling = NullValueHandling.Ignore)]
         public long? DireScore { get; set; }
 
-        [JsonProperty("dire_team_id")]
-        public dynamic DireTeamId { get; set; }
+        [JsonProperty("dire_team_id")] public dynamic DireTeamId { get; set; }
 
         [JsonProperty("draft_timings", NullValueHandling = NullValueHandling.Ignore)]
         public List<DraftTiming> DraftTimings { get; set; }
@@ -84,8 +82,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("radiant_score", NullValueHandling = NullValueHandling.Ignore)]
         public long? RadiantScore { get; set; }
 
-        [JsonProperty("radiant_team_id")]
-        public dynamic RadiantTeamId { get; set; }
+        [JsonProperty("radiant_team_id")] public dynamic RadiantTeamId { get; set; }
 
         [JsonProperty("radiant_win", NullValueHandling = NullValueHandling.Ignore)]
         public bool? RadiantWin { get; set; }
@@ -93,8 +90,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("radiant_xp_adv", NullValueHandling = NullValueHandling.Ignore)]
         public List<long> RadiantXpAdv { get; set; }
 
-        [JsonProperty("skill")]
-        public dynamic Skill { get; set; }
+        [JsonProperty("skill")] public dynamic Skill { get; set; }
 
         [JsonProperty("start_time", NullValueHandling = NullValueHandling.Ignore)]
         public long? StartTime { get; set; }
@@ -145,7 +141,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public Uri ReplayUrl { get; set; }
     }
 
-    public partial class Chat
+    public class Chat
     {
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public long? Time { get; set; }
@@ -166,7 +162,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public string Unit { get; set; }
     }
 
-    public partial class DraftTiming
+    public class DraftTiming
     {
         [JsonProperty("order", NullValueHandling = NullValueHandling.Ignore)]
         public long? Order { get; set; }
@@ -180,8 +176,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("hero_id", NullValueHandling = NullValueHandling.Ignore)]
         public long? HeroId { get; set; }
 
-        [JsonProperty("player_slot")]
-        public dynamic PlayerSlot { get; set; }
+        [JsonProperty("player_slot")] public dynamic PlayerSlot { get; set; }
 
         [JsonProperty("extra_time", NullValueHandling = NullValueHandling.Ignore)]
         public long? ExtraTime { get; set; }
@@ -190,11 +185,11 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? TotalTimeTaken { get; set; }
     }
 
-    public partial class MyWordCounts
+    public class MyWordCounts
     {
     }
 
-    public partial class Objective
+    public class Objective
     {
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public long? Time { get; set; }
@@ -218,7 +213,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? Team { get; set; }
     }
 
-    public partial class PicksBan
+    public class PicksBan
     {
         [JsonProperty("is_pick", NullValueHandling = NullValueHandling.Ignore)]
         public bool? IsPick { get; set; }
@@ -233,7 +228,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? Order { get; set; }
     }
 
-    public partial class IndividualMatchDataPlayer
+    public class IndividualMatchDataPlayer
     {
         [JsonProperty("match_id", NullValueHandling = NullValueHandling.Ignore)]
         public long? MatchId { get; set; }
@@ -250,14 +245,12 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("ability_uses", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, long> AbilityUses { get; set; }
 
-        [JsonProperty("account_id")]
-        public long? AccountId { get; set; }
+        [JsonProperty("account_id")] public long? AccountId { get; set; }
 
         [JsonProperty("actions", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, long> Actions { get; set; }
 
-        [JsonProperty("additional_units")]
-        public dynamic AdditionalUnits { get; set; }
+        [JsonProperty("additional_units")] public dynamic AdditionalUnits { get; set; }
 
         [JsonProperty("assists", NullValueHandling = NullValueHandling.Ignore)]
         public long? Assists { get; set; }
@@ -412,11 +405,9 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("party_size", NullValueHandling = NullValueHandling.Ignore)]
         public long? PartySize { get; set; }
 
-        [JsonProperty("performance_others")]
-        public dynamic PerformanceOthers { get; set; }
+        [JsonProperty("performance_others")] public dynamic PerformanceOthers { get; set; }
 
-        [JsonProperty("permanent_buffs")]
-        public List<PermanentBuff> PermanentBuffs { get; set; }
+        [JsonProperty("permanent_buffs")] public List<PermanentBuff> PermanentBuffs { get; set; }
 
         [JsonProperty("pings", NullValueHandling = NullValueHandling.Ignore)]
         public long? Pings { get; set; }
@@ -433,8 +424,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("randomed", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Randomed { get; set; }
 
-        [JsonProperty("repicked")]
-        public dynamic Repicked { get; set; }
+        [JsonProperty("repicked")] public dynamic Repicked { get; set; }
 
         [JsonProperty("roshans_killed", NullValueHandling = NullValueHandling.Ignore)]
         public long? RoshansKilled { get; set; }
@@ -613,8 +603,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("life_state_dead", NullValueHandling = NullValueHandling.Ignore)]
         public long? LifeStateDead { get; set; }
 
-        [JsonProperty("rank_tier")]
-        public long? RankTier { get; set; }
+        [JsonProperty("rank_tier")] public long? RankTier { get; set; }
 
         [JsonProperty("cosmetics", NullValueHandling = NullValueHandling.Ignore)]
         public List<Cosmetic> Cosmetics { get; set; }
@@ -625,14 +614,12 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("personaname", NullValueHandling = NullValueHandling.Ignore)]
         public string Personaname { get; set; }
 
-        [JsonProperty("name")]
-        public dynamic Name { get; set; }
+        [JsonProperty("name")] public dynamic Name { get; set; }
 
-        [JsonProperty("last_login")]
-        public DateTimeOffset? LastLogin { get; set; }
+        [JsonProperty("last_login")] public DateTimeOffset? LastLogin { get; set; }
     }
 
-    public partial class AbilityTargets
+    public class AbilityTargets
     {
         [JsonProperty("lion_mana_drain", NullValueHandling = NullValueHandling.Ignore)]
         public LegionCommanderDuel LionManaDrain { get; set; }
@@ -689,7 +676,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public HammerfestPonies VengefulspiritNetherSwap { get; set; }
     }
 
-    public partial class HammerfestPonies
+    public class HammerfestPonies
     {
         [JsonProperty("npc_dota_hero_omniknight", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroOmniknight { get; set; }
@@ -707,7 +694,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? NpcDotaHeroLion { get; set; }
     }
 
-    public partial class InvokerAlacrity
+    public class InvokerAlacrity
     {
         [JsonProperty("npc_dota_hero_invoker", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroInvoker { get; set; }
@@ -719,13 +706,13 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? NpcDotaHeroEmberSpirit { get; set; }
     }
 
-    public partial class InvokerSunStrike
+    public class InvokerSunStrike
     {
         [JsonProperty("npc_dota_hero_invoker", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroInvoker { get; set; }
     }
 
-    public partial class LegionCommanderDuel
+    public class LegionCommanderDuel
     {
         [JsonProperty("npc_dota_hero_disruptor", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroDisruptor { get; set; }
@@ -743,7 +730,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? NpcDotaHeroVengefulspirit { get; set; }
     }
 
-    public partial class LionFingerOfDeath
+    public class LionFingerOfDeath
     {
         [JsonProperty("npc_dota_hero_disruptor", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroDisruptor { get; set; }
@@ -755,7 +742,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? NpcDotaHeroVengefulspirit { get; set; }
     }
 
-    public partial class Benchmarks
+    public class Benchmarks
     {
         [JsonProperty("gold_per_min", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, double> GoldPerMin { get; set; }
@@ -785,7 +772,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public Dictionary<string, double> Lhten { get; set; }
     }
 
-    public partial class BuybackLog
+    public class BuybackLog
     {
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public long? Time { get; set; }
@@ -800,7 +787,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? PlayerSlot { get; set; }
     }
 
-    public partial class Cosmetic
+    public class Cosmetic
     {
         [JsonProperty("item_id", NullValueHandling = NullValueHandling.Ignore)]
         public long? ItemId { get; set; }
@@ -820,23 +807,19 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("image_path", NullValueHandling = NullValueHandling.Ignore)]
         public string ImagePath { get; set; }
 
-        [JsonProperty("item_description")]
-        public string ItemDescription { get; set; }
+        [JsonProperty("item_description")] public string ItemDescription { get; set; }
 
         [JsonProperty("item_name", NullValueHandling = NullValueHandling.Ignore)]
         public string ItemName { get; set; }
 
-        [JsonProperty("item_rarity")]
-        public string ItemRarity { get; set; }
+        [JsonProperty("item_rarity")] public string ItemRarity { get; set; }
 
-        [JsonProperty("item_type_name")]
-        public string ItemTypeName { get; set; }
+        [JsonProperty("item_type_name")] public string ItemTypeName { get; set; }
 
-        [JsonProperty("used_by_heroes")]
-        public string UsedByHeroes { get; set; }
+        [JsonProperty("used_by_heroes")] public string UsedByHeroes { get; set; }
     }
 
-    public partial class DamageTargets
+    public class DamageTargets
     {
         [JsonProperty("null", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, long> Null { get; set; }
@@ -932,7 +915,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public Orchid Orchid { get; set; }
     }
 
-    public partial class InvokerIceWall
+    public class InvokerIceWall
     {
         [JsonProperty("npc_dota_hero_omniknight", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroOmniknight { get; set; }
@@ -941,13 +924,13 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? NpcDotaHeroLegionCommander { get; set; }
     }
 
-    public partial class Orchid
+    public class Orchid
     {
         [JsonProperty("npc_dota_hero_omniknight", NullValueHandling = NullValueHandling.Ignore)]
         public long? NpcDotaHeroOmniknight { get; set; }
     }
 
-    public partial class KillsLogElement
+    public class KillsLogElement
     {
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public long? Time { get; set; }
@@ -956,7 +939,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public string Key { get; set; }
     }
 
-    public partial class MaxHeroHit
+    public class MaxHeroHit
     {
         [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
         public MaxHeroHitType? Type { get; set; }
@@ -967,8 +950,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         [JsonProperty("max", NullValueHandling = NullValueHandling.Ignore)]
         public bool? Max { get; set; }
 
-        [JsonProperty("inflictor")]
-        public string Inflictor { get; set; }
+        [JsonProperty("inflictor")] public string Inflictor { get; set; }
 
         [JsonProperty("unit", NullValueHandling = NullValueHandling.Ignore)]
         public string Unit { get; set; }
@@ -986,7 +968,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? PlayerSlot { get; set; }
     }
 
-    public partial class ObsLeftLogElement
+    public class ObsLeftLogElement
     {
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public long? Time { get; set; }
@@ -1019,7 +1001,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? PlayerSlot { get; set; }
     }
 
-    public partial class PermanentBuff
+    public class PermanentBuff
     {
         [JsonProperty("permanent_buff", NullValueHandling = NullValueHandling.Ignore)]
         public long? PermanentBuffPermanentBuff { get; set; }
@@ -1028,7 +1010,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? StackCount { get; set; }
     }
 
-    public partial class RunesLog
+    public class RunesLog
     {
         [JsonProperty("time", NullValueHandling = NullValueHandling.Ignore)]
         public long? Time { get; set; }
@@ -1037,7 +1019,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? Key { get; set; }
     }
 
-    public partial class Teamfight
+    public class Teamfight
     {
         [JsonProperty("start", NullValueHandling = NullValueHandling.Ignore)]
         public long? Start { get; set; }
@@ -1055,7 +1037,7 @@ namespace Dota_Geek.DataTypes.OpenDota
         public List<TeamfightPlayer> Players { get; set; }
     }
 
-    public partial class TeamfightPlayer
+    public class TeamfightPlayer
     {
         [JsonProperty("deaths_pos", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, Dictionary<string, long>> DeathsPos { get; set; }
@@ -1097,33 +1079,73 @@ namespace Dota_Geek.DataTypes.OpenDota
         public long? XpEnd { get; set; }
     }
 
-    public enum ChatType { Chat, Chatwheel };
+    public enum ChatType
+    {
+        Chat,
+        Chatwheel
+    }
 
-    public enum ObjectiveType { BuildingKill, ChatMessageAegis, ChatMessageCourierLost, ChatMessageFirstblood, ChatMessageRoshanKill };
+    public enum ObjectiveType
+    {
+        BuildingKill,
+        ChatMessageAegis,
+        ChatMessageCourierLost,
+        ChatMessageFirstblood,
+        ChatMessageRoshanKill
+    }
 
-    public enum Prefab { Courier, Taunt, Tool, Ward, Wearable };
+    public enum Prefab
+    {
+        Courier,
+        Taunt,
+        Tool,
+        Ward,
+        Wearable
+    }
 
-    public enum MaxHeroHitType { MaxHeroHit };
+    public enum MaxHeroHitType
+    {
+        MaxHeroHit
+    }
 
-    public enum ObsLeftLogType { ObsLeftLog, ObsLog, SenLeftLog, SenLog };
+    public enum ObsLeftLogType
+    {
+        ObsLeftLog,
+        ObsLog,
+        SenLeftLog,
+        SenLog
+    }
 
-    public partial struct Key
+    public struct Key
     {
         public long? Integer;
         public string String;
 
-        public static implicit operator Key(long Integer) => new Key { Integer = Integer };
-        public static implicit operator Key(string String) => new Key { String = String };
+        public static implicit operator Key(long integer)
+        {
+            return new Key {Integer = integer};
+        }
+
+        public static implicit operator Key(string String)
+        {
+            return new Key {String = String};
+        }
     }
 
     public partial class IndividualMatchData
     {
-        public static IndividualMatchData FromJson(string json) => JsonConvert.DeserializeObject<IndividualMatchData>(json, Dota_Geek.DataTypes.OpenDota.Converter.Settings);
+        public static IndividualMatchData FromJson(string json)
+        {
+            return JsonConvert.DeserializeObject<IndividualMatchData>(json, Converter.Settings);
+        }
     }
 
     public static class Serialize
     {
-        public static string ToJson(this IndividualMatchData self) => JsonConvert.SerializeObject(self, Dota_Geek.DataTypes.OpenDota.Converter.Settings);
+        public static string ToJson(this IndividualMatchData self)
+        {
+            return JsonConvert.SerializeObject(self, Converter.Settings);
+        }
     }
 
     internal static class Converter
@@ -1132,21 +1154,25 @@ namespace Dota_Geek.DataTypes.OpenDota
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
-            Converters = {
+            Converters =
+            {
                 ChatTypeConverter.Singleton,
                 KeyConverter.Singleton,
                 ObjectiveTypeConverter.Singleton,
                 PrefabConverter.Singleton,
                 MaxHeroHitTypeConverter.Singleton,
                 ObsLeftLogTypeConverter.Singleton,
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
+                new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal}
+            }
         };
     }
 
     internal class ChatTypeConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(ChatType) || t == typeof(ChatType?);
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(ChatType) || t == typeof(ChatType?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -1159,6 +1185,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                 case "chatwheel":
                     return ChatType.Chatwheel;
             }
+
             throw new Exception("Cannot unmarshal type ChatType");
         }
 
@@ -1169,7 +1196,8 @@ namespace Dota_Geek.DataTypes.OpenDota
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (ChatType)untypedValue;
+
+            var value = (ChatType) untypedValue;
             switch (value)
             {
                 case ChatType.Chat:
@@ -1179,6 +1207,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                     serializer.Serialize(writer, "chatwheel");
                     return;
             }
+
             throw new Exception("Cannot marshal type ChatType");
         }
 
@@ -1187,7 +1216,10 @@ namespace Dota_Geek.DataTypes.OpenDota
 
     internal class KeyConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(Key) || t == typeof(Key?);
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(Key) || t == typeof(Key?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -1195,28 +1227,31 @@ namespace Dota_Geek.DataTypes.OpenDota
             {
                 case JsonToken.Integer:
                     var integerValue = serializer.Deserialize<long>(reader);
-                    return new Key { Integer = integerValue };
+                    return new Key {Integer = integerValue};
                 case JsonToken.String:
                 case JsonToken.Date:
                     var stringValue = serializer.Deserialize<string>(reader);
-                    return new Key { String = stringValue };
+                    return new Key {String = stringValue};
             }
+
             throw new Exception("Cannot unmarshal type Key");
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
         {
-            var value = (Key)untypedValue;
+            var value = (Key) untypedValue;
             if (value.Integer != null)
             {
                 serializer.Serialize(writer, value.Integer.Value);
                 return;
             }
+
             if (value.String != null)
             {
                 serializer.Serialize(writer, value.String);
                 return;
             }
+
             throw new Exception("Cannot marshal type Key");
         }
 
@@ -1225,7 +1260,10 @@ namespace Dota_Geek.DataTypes.OpenDota
 
     internal class ObjectiveTypeConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(ObjectiveType) || t == typeof(ObjectiveType?);
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(ObjectiveType) || t == typeof(ObjectiveType?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -1244,6 +1282,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                 case "building_kill":
                     return ObjectiveType.BuildingKill;
             }
+
             throw new Exception("Cannot unmarshal type ObjectiveType");
         }
 
@@ -1254,7 +1293,8 @@ namespace Dota_Geek.DataTypes.OpenDota
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (ObjectiveType)untypedValue;
+
+            var value = (ObjectiveType) untypedValue;
             switch (value)
             {
                 case ObjectiveType.ChatMessageAegis:
@@ -1273,6 +1313,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                     serializer.Serialize(writer, "building_kill");
                     return;
             }
+
             throw new Exception("Cannot marshal type ObjectiveType");
         }
 
@@ -1281,7 +1322,10 @@ namespace Dota_Geek.DataTypes.OpenDota
 
     internal class PrefabConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(Prefab) || t == typeof(Prefab?);
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(Prefab) || t == typeof(Prefab?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -1300,6 +1344,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                 case "wearable":
                     return Prefab.Wearable;
             }
+
             throw new Exception("Cannot unmarshal type Prefab");
         }
 
@@ -1310,7 +1355,8 @@ namespace Dota_Geek.DataTypes.OpenDota
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (Prefab)untypedValue;
+
+            var value = (Prefab) untypedValue;
             switch (value)
             {
                 case Prefab.Courier:
@@ -1329,6 +1375,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                     serializer.Serialize(writer, "wearable");
                     return;
             }
+
             throw new Exception("Cannot marshal type Prefab");
         }
 
@@ -1337,16 +1384,16 @@ namespace Dota_Geek.DataTypes.OpenDota
 
     internal class MaxHeroHitTypeConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(MaxHeroHitType) || t == typeof(MaxHeroHitType?);
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(MaxHeroHitType) || t == typeof(MaxHeroHitType?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null) return null;
             var value = serializer.Deserialize<string>(reader);
-            if (value == "max_hero_hit")
-            {
-                return MaxHeroHitType.MaxHeroHit;
-            }
+            if (value == "max_hero_hit") return MaxHeroHitType.MaxHeroHit;
             throw new Exception("Cannot unmarshal type MaxHeroHitType");
         }
 
@@ -1357,12 +1404,14 @@ namespace Dota_Geek.DataTypes.OpenDota
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (MaxHeroHitType)untypedValue;
+
+            var value = (MaxHeroHitType) untypedValue;
             if (value == MaxHeroHitType.MaxHeroHit)
             {
                 serializer.Serialize(writer, "max_hero_hit");
                 return;
             }
+
             throw new Exception("Cannot marshal type MaxHeroHitType");
         }
 
@@ -1371,7 +1420,10 @@ namespace Dota_Geek.DataTypes.OpenDota
 
     internal class ObsLeftLogTypeConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(ObsLeftLogType) || t == typeof(ObsLeftLogType?);
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(ObsLeftLogType) || t == typeof(ObsLeftLogType?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -1388,6 +1440,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                 case "sen_log":
                     return ObsLeftLogType.SenLog;
             }
+
             throw new Exception("Cannot unmarshal type ObsLeftLogType");
         }
 
@@ -1398,7 +1451,8 @@ namespace Dota_Geek.DataTypes.OpenDota
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (ObsLeftLogType)untypedValue;
+
+            var value = (ObsLeftLogType) untypedValue;
             switch (value)
             {
                 case ObsLeftLogType.ObsLeftLog:
@@ -1414,6 +1468,7 @@ namespace Dota_Geek.DataTypes.OpenDota
                     serializer.Serialize(writer, "sen_log");
                     return;
             }
+
             throw new Exception("Cannot marshal type ObsLeftLogType");
         }
 

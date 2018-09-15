@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using Dota_Geek.DataTypes;
 using Dota_Geek.DataTypes.OpenDota;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dota_Geek.Modules
 {
@@ -17,20 +20,48 @@ namespace Dota_Geek.Modules
         [Command("profile", RunMode = RunMode.Async)]
         public async Task LastMatchTask(string accountId)
         {
+            var steam32Parse = accountId.Steam32Parse();
+            var url = $"https://api.opendota.com/api/players/{steam32Parse}";
             using (var client = new WebClient())
             {
-                var url = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}";
                 var json = client.DownloadString(url);
-                PlayerProfile obj = JsonConvert.DeserializeObject<PlayerProfile>(json);
-                
+                var obj = JsonConvert.DeserializeObject<PlayerProfile>(json);
 
-                var winLoss = WinTask(accountId);
-                var win = winLoss.win;
-                var lose = winLoss.lose;
-                // TODO : something
+                var embed = new EmbedBuilder();
+                embed.WithAuthor(obj.Profile.Personaname ?? "Unknown", obj.Profile.Avatar, obj.Profile.Profileurl);
+                embed.Url = $"https://www.opendota.com/matches/{obj.Profile.AccountId}";
+                if (obj.RankTier != null)
+                    embed.AddField("Medal", ((int) (obj.RankTier / 10)).ParseMedal() + " " + obj.RankTier % 10, true);
+                else
+                    throw new ArgumentNullException($"Private Profile Probably.");
+
+                var winLose = WinTask(steam32Parse.ToString());
+                var win = winLose.win;
+                var lose = winLose.lose;
+                embed.AddField("Win/Loss", $"{win}/{lose} ({win * 100 / (win + lose)}%)", true);
+
+                var url2 = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/rankings";
+                var json2 = client.DownloadString(url2);
+                var obj2 = JsonConvert.DeserializeObject<List<HeroRankings>>(json2);
+                var sorted = obj2.OrderByDescending(x => x.Score).Take(5);
+                json2 = sorted.Aggregate("", (current, rankings) => current + rankings.HeroId.HeroName() + "\n");
+                embed.AddField("Most Successful Heroes", json2, true);
+
+                var file = File.ReadAllText("DataTypes\\Medals.json");
+                var medal = JObject.Parse(file);
+                embed.ThumbnailUrl = medal[obj.RankTier.ToString()].ToString();
+
+                var url3 = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/recentMatches";
+                var json3 = client.DownloadString(url3);
+                var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json3);
+                var time = DateTimeOffset.FromUnixTimeSeconds(recent.First().StartTime);
+
+                embed.AddField("Last Played", time.DateTime + " UTC", true);
+
+                var r = new Random();
+                embed.Color = new Color(r.Next(255), r.Next(255), r.Next(255));
+                await ReplyAsync(string.Empty, false, embed.Build());
             }
-
-            await ReplyAsync("done");
         }
 
         [Command("match", RunMode = RunMode.Async)]
@@ -48,7 +79,7 @@ namespace Dota_Geek.Modules
                          "Hero Name".PadRight(20) +
                          "Kills".PadRight(7) +
                          "Death".PadRight(7) +
-                         "Assists".PadRight(7) +
+                         "Assist".PadRight(7) +
                          "XPM".PadRight(6) +
                          "GPM".PadRight(6) + "\n";
                 for (var i = 0; i < 73; i++)
@@ -74,7 +105,7 @@ namespace Dota_Geek.Modules
         {
             using (var client = new WebClient())
             {
-                var url = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/wl";
+                var url = $"https://api.opendota.com/api/players/{accountId}/wl";
                 var json = client.DownloadString(url);
                 var obj = JsonConvert.DeserializeObject<dynamic>(json);
                 return obj;
@@ -169,6 +200,3 @@ namespace Dota_Geek.Modules
         }
     }
 }
-
-
-// TODO : RECENT MATCHES AND TEAM ID

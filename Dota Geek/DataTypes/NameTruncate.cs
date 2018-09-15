@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Dota_Geek.DataTypes
+﻿namespace Dota_Geek.DataTypes
 {
     internal static class NameTruncate
     {
