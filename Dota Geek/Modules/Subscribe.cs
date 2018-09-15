@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Diagnostics.Contracts;
+using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -9,7 +11,36 @@ namespace Dota_Geek.Modules
 {
     public class Subscribe : ModuleBase<SocketCommandContext>
     {
-        [Command("i am", RunMode = RunMode.Async)]
+        [Command("Who am I", RunMode = RunMode.Async)]
+        [Alias("Who am i?")]
+        [Summary("That's really a dumb thing for a human to ask a robot who he is")]
+        public async Task WhoTask()
+        {
+            if (LinkedAccounts.UserDictionary.ContainsKey(Context.User.Id))
+            {
+                using (var client = new WebClient())
+                {
+                    var url = $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
+                    var json = client.DownloadString(url);
+                    var obj = JsonConvert.DeserializeObject<SteamConvertData>(json);
+                    var reply =
+                        $"Nice to meet you [{obj.Name}](http://steamcommunity.com/profiles/{obj.Steamid64}) 🙂";
+                    await ReplyAsync(string.Empty, false, new EmbedBuilder
+                    {
+                        Description = reply
+                    }.Build());
+                }
+            }
+            else
+            {
+                await ReplyAsync("Hmm looks like we have never met before. " +
+                                 "\n*but don't you worry Ive arranged us a secret meeting at* `I am [you account]` 😉");
+            }
+        }
+
+        [Command("I am", RunMode = RunMode.Async)]
+        [Summary
+            ("Gives your sad life a meaning. After you set this up, commands like `profile` and others wont require a parameter :)")]
         [Alias("iam")]
         public async Task SubscribeTask(string account)
         {
@@ -27,7 +58,7 @@ namespace Dota_Geek.Modules
                 }
                 else
                 {
-                    url = $"https://steamid.venner.io/raw.php?input={LinkedAccounts.UserDictionary[Context.User.Id]}";
+                    url = $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
                     json = client.DownloadString(url);
                     obj = JsonConvert.DeserializeObject<SteamConvertData>(json);
                     reply =
@@ -36,6 +67,33 @@ namespace Dota_Geek.Modules
 
                 var embed = new EmbedBuilder {Description = reply};
                 await ReplyAsync(string.Empty, false, embed.Build());
+            }
+        }
+
+        [Command("I am not", RunMode = RunMode.Async)]
+        [Summary(
+            "I will forget you and you will be cursed to give a parameter every-time you use an accountID demanding command")]
+        public async Task UnSubscribeTask(string accountId)
+        {
+            if (LinkedAccounts.UserDictionary.ContainsKey(Context.User.Id))
+            {
+                if (LinkedAccounts.UserDictionary[Context.User.Id] == accountId.Steam32Parse())
+                {
+                    LinkedAccounts.UserDictionary.Remove(Context.User.Id);
+                    LinkedAccounts.Save();
+                    await ReplyAsync("Okay you are no longer " + accountId +
+                                     "\nI curse you to give a parameter every-time you use an `accountID` demanding command. RIP!");
+                }
+                else
+                {
+                    await ReplyAsync("You were never " + accountId);
+                }
+            }
+            else
+            {
+                await ReplyAsync(
+                    "Uhh I don't know who you are 😑" +
+                    "\n*I've arranged us a secret meeting at* `I am [you account]` 😉");
             }
         }
     }

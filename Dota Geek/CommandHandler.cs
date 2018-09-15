@@ -53,9 +53,20 @@ namespace Dota_Geek
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 await context.Channel.TriggerTypingAsync();
+                IResult result;
 
-                var result =
-                    await _service.ExecuteAsync(context, argPos, _services);
+                try
+                {
+                    result = await _service.ExecuteAsync(context, argPos, _services);
+
+                }
+                catch (Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine(e);
+                    Console.ResetColor();
+                    throw;
+                }
 
                 if (!result.IsSuccess)
                 {

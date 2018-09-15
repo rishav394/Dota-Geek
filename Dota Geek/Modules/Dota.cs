@@ -13,13 +13,21 @@ using Newtonsoft.Json.Linq;
 
 namespace Dota_Geek.Modules
 {
-    public class Matches : ModuleBase<SocketCommandContext>
+    public class Dota : ModuleBase<SocketCommandContext>
     {
         public static string SteamApiKey { get; } = "902AC23891ED8519FFCDE9D49DC65725";
 
-        [Command("profile", RunMode = RunMode.Async)]
-        public async Task LastMatchTask(string accountId)
+        [Command("Profile", RunMode = RunMode.Async)]
+        [Summary("Shows the target's current Profile with some nasty details")]
+        public async Task LastMatchTask(string accountId = null)
         {
+            if (accountId is null)
+            {
+                accountId = LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId)
+                    ? $"[U:1:{longSteamId}]"
+                    : throw new ArgumentNullException();
+            }
+
             var steam32Parse = accountId.Steam32Parse();
             var url = $"https://api.opendota.com/api/players/{steam32Parse}";
             using (var client = new WebClient())
@@ -29,7 +37,9 @@ namespace Dota_Geek.Modules
 
                 var embed = new EmbedBuilder();
                 embed.WithAuthor(obj.Profile.Personaname ?? "Unknown", obj.Profile.Avatar, obj.Profile.Profileurl);
-                embed.Url = $"https://www.opendota.com/matches/{obj.Profile.AccountId}";
+                
+                var openDotoUrl = $"https://www.opendota.com/players/{obj.Profile.AccountId}";
+                var dotaBuffUrl = $"https://www.dotabuff.com/players/{obj.Profile.AccountId}";
                 if (obj.RankTier != null)
                     embed.AddField("Medal", ((int) (obj.RankTier / 10)).ParseMedal() + " " + obj.RankTier % 10, true);
                 else
@@ -45,8 +55,7 @@ namespace Dota_Geek.Modules
                 var obj2 = JsonConvert.DeserializeObject<List<HeroRankings>>(json2);
                 var sorted = obj2.OrderByDescending(x => x.Score).Take(5);
                 json2 = sorted.Aggregate("", (current, rankings) => current + rankings.HeroId.HeroName() + "\n");
-                embed.AddField("Most Successful Heroes", json2, true);
-
+                
                 var file = File.ReadAllText("DataTypes\\Medals.json");
                 var medal = JObject.Parse(file);
                 embed.ThumbnailUrl = medal[obj.RankTier.ToString()].ToString();
@@ -58,23 +67,35 @@ namespace Dota_Geek.Modules
 
                 embed.AddField("Last Played", time.DateTime + " UTC", true);
 
+                embed.AddField("Detailed stats", $"[OpenDota]({openDotoUrl})\n[DotaBuff]({dotaBuffUrl})", true);
+
+                embed.AddField("Most Successful Heroes", json2, true);
+
                 var r = new Random();
                 embed.Color = new Color(r.Next(255), r.Next(255), r.Next(255));
                 await ReplyAsync(string.Empty, false, embed.Build());
             }
         }
 
-        [Command("match", RunMode = RunMode.Async)]
+        [Command("Match", RunMode = RunMode.Async)]
         [Alias("matches", "match data")]
+        [Summary("Gives you detailed analysis of a specific match")]
         public async Task MatchTask(long matchId)
         {
+            var my = MatchDataGiver(matchId);
+            await ReplyAsync(my);
+        }
+
+        private static string MatchDataGiver(long matchId)
+        {
+            string my;
             using (var client = new WebClient())
             {
                 var url = $"https://api.opendota.com/api/matches/{matchId}";
                 var json = client.DownloadString(url);
                 var obj = IndividualMatchData.FromJson(json);
 
-                var my = "```" +
+                my = "```" +
                          "Player Name".PadRight(20) +
                          "Hero Name".PadRight(20) +
                          "Kills".PadRight(7) +
@@ -96,12 +117,12 @@ namespace Dota_Geek.Modules
                           "\n";
 
                 my += "```";
-
-                await ReplyAsync(my);
             }
+
+            return my;
         }
 
-        private dynamic WinTask(string accountId)
+        private static dynamic WinTask(string accountId)
         {
             using (var client = new WebClient())
             {
@@ -112,9 +133,17 @@ namespace Dota_Geek.Modules
             }
         }
 
-        [Command("recent matches", RunMode = RunMode.Async)]
-        public async Task RecentMatchesTask(string accountId)
+        [Command("Recent Matches", RunMode = RunMode.Async)]
+        [Summary("Gives you a list of the target's last 15 matches")]
+        public async Task RecentMatchesTask(string accountId = null)
         {
+            if (accountId is null)
+            {
+                accountId = LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId)
+                    ? $"[U:1:{longSteamId}]"
+                    : throw new ArgumentNullException();
+            }
+
             using (var client = new WebClient())
             {
                 var url = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/recentMatches";
@@ -140,14 +169,15 @@ namespace Dota_Geek.Modules
             }
         }
 
-        [Command("teams")]
+        [Command("Teams", RunMode = RunMode.Async), Alias("Pro")]
+        [Summary("Gives you a list of top professional teams sorted by their ratings.")]
         public async Task ProTeamsTask()
         {
             using (var client = new WebClient())
             {
                 var json = client.DownloadString("https://api.opendota.com/api/teams");
                 var obj = JsonConvert.DeserializeObject<List<Teams>>(json);
-                var sorted = obj.OrderByDescending(x => x.Rating).Take(10);
+                var sorted = obj.OrderByDescending(x => x.Rating).Take(15);
 
                 var my =
                     $"```{"Name".PadRight(20, ' ') + "Wins".PadRight(10, ' ') + "Losses".PadRight(10, ' ') + "TeamID"}\n";
@@ -162,9 +192,17 @@ namespace Dota_Geek.Modules
             }
         }
 
-        [Command("hero ranking", RunMode = RunMode.Async)]
-        public async Task HeroRankingTask(string accountId)
+        [Command("Hero ranking", RunMode = RunMode.Async)]
+        [Summary("Gives you the target's hero list with specific performance.")]
+        public async Task HeroRankingTask(string accountId = null)
         {
+            if (accountId is null)
+            {
+                accountId = LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId)
+                    ? $"[U:1:{longSteamId}]"
+                    : throw new ArgumentNullException();
+            }
+
             using (var client = new WebClient())
             {
                 var url = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/rankings";
