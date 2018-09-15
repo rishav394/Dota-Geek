@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord.Commands;
@@ -50,24 +51,16 @@ namespace Dota_Geek
             var argPos = 0;
 
             if (msg.HasStringPrefix(currentPrefix, ref argPos)
+                || msg.HasStringPrefix(currentPrefix.ToUpper(), ref argPos)
+                || msg.HasStringPrefix(currentPrefix.ToLowerInvariant(), ref argPos)
+                || msg.HasStringPrefix(currentPrefix.First().ToString().ToUpper() + currentPrefix.Substring(1),
+                    ref argPos)
                 || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 await context.Channel.TriggerTypingAsync();
-                IResult result;
 
-                try
-                {
-                    result = await _service.ExecuteAsync(context, argPos, _services);
-
-                }
-                catch (Exception e)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                    throw;
-                }
-
+                var result = await _service.ExecuteAsync(context, argPos, _services);
+                
                 if (!result.IsSuccess)
                 {
                     Console.WriteLine("An error occured");

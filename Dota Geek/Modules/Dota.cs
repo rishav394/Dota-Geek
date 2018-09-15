@@ -19,7 +19,7 @@ namespace Dota_Geek.Modules
 
         [Command("Profile", RunMode = RunMode.Async)]
         [Summary("Shows the target's current Profile with some nasty details")]
-        public async Task LastMatchTask(string accountId = null)
+        public async Task ProfileTask(string accountId = null)
         {
             if (accountId is null)
             {

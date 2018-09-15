@@ -26,7 +26,8 @@ namespace Dota_Geek
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
-                LogLevel = LogSeverity.Verbose
+                LogLevel = LogSeverity.Verbose,
+                MessageCacheSize = 50000
             });
 
             _client.Log += ClientLog;
@@ -44,6 +45,7 @@ namespace Dota_Geek
 
         private Task ClientReady()
         {
+            Console.WriteLine($"I am in {_client.Guilds.Count} servers");
             return Task.CompletedTask;
         }
 
