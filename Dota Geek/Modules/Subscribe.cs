@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace Dota_Geek.Modules
 {
+    [Name("Define yourself")]
     public class Subscribe : ModuleBase<SocketCommandContext>
     {
         [Command("Who am I", RunMode = RunMode.Async)]

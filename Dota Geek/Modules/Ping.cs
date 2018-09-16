@@ -9,8 +9,8 @@ namespace Dota_Geek.Modules
 {
     public class Ping : ModuleBase<SocketCommandContext>
     {
-        [Command("latency", RunMode = RunMode.Async)]
-        [Alias("ping", "pong", "rtt")]
+        [Command("Ping", RunMode = RunMode.Async)]
+        [Alias("latency", "pong", "rtt")]
         [Summary("Returns the current estimated round-trip latency over WebSocket and REST")]
         public async Task LatencyAsyncTask()
         {

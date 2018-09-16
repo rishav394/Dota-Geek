@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Dota_Geek.Modules
 {
+    [Name("Dota Stuff")]
     public class Dota : ModuleBase<SocketCommandContext>
     {
         public static string SteamApiKey { get; } = "902AC23891ED8519FFCDE9D49DC65725";
@@ -23,9 +24,14 @@ namespace Dota_Geek.Modules
         {
             if (accountId is null)
             {
-                accountId = LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId)
-                    ? $"[U:1:{longSteamId}]"
-                    : throw new ArgumentNullException();
+                if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                    accountId = $"[U:1:{longSteamId}]";
+                else
+                {
+                    await ReplyAsync(
+                        "Uhh I don't know you. Either tell me who you are by `I am [your steam profile]` or provide a steamID with this command.");
+                    throw new ArgumentNullException(nameof(accountId));
+                }
             }
 
             var steam32Parse = accountId.Steam32Parse();
@@ -37,7 +43,7 @@ namespace Dota_Geek.Modules
 
                 var embed = new EmbedBuilder();
                 embed.WithAuthor(obj.Profile.Personaname ?? "Unknown", obj.Profile.Avatar, obj.Profile.Profileurl);
-                
+
                 var openDotoUrl = $"https://www.opendota.com/players/{obj.Profile.AccountId}";
                 var dotaBuffUrl = $"https://www.dotabuff.com/players/{obj.Profile.AccountId}";
                 if (obj.RankTier != null)
@@ -55,7 +61,7 @@ namespace Dota_Geek.Modules
                 var obj2 = JsonConvert.DeserializeObject<List<HeroRankings>>(json2);
                 var sorted = obj2.OrderByDescending(x => x.Score).Take(5);
                 json2 = sorted.Aggregate("", (current, rankings) => current + rankings.HeroId.HeroName() + "\n");
-                
+
                 var file = File.ReadAllText("DataTypes\\Medals.json");
                 var medal = JObject.Parse(file);
                 embed.ThumbnailUrl = medal[obj.RankTier.ToString()].ToString();
@@ -96,13 +102,13 @@ namespace Dota_Geek.Modules
                 var obj = IndividualMatchData.FromJson(json);
 
                 my = "```" +
-                         "Player Name".PadRight(20) +
-                         "Hero Name".PadRight(20) +
-                         "Kills".PadRight(7) +
-                         "Death".PadRight(7) +
-                         "Assist".PadRight(7) +
-                         "XPM".PadRight(6) +
-                         "GPM".PadRight(6) + "\n";
+                     "Player Name".PadRight(20) +
+                     "Hero Name".PadRight(20) +
+                     "Kills".PadRight(7) +
+                     "Death".PadRight(7) +
+                     "Assist".PadRight(7) +
+                     "XPM".PadRight(6) +
+                     "GPM".PadRight(6) + "\n";
                 for (var i = 0; i < 73; i++)
                     my += "_";
                 my += "\n";
@@ -139,9 +145,14 @@ namespace Dota_Geek.Modules
         {
             if (accountId is null)
             {
-                accountId = LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId)
-                    ? $"[U:1:{longSteamId}]"
-                    : throw new ArgumentNullException();
+                if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                    accountId = $"[U:1:{longSteamId}]";
+                else
+                {
+                    await ReplyAsync(
+                        "Uhh I don't know you. Either tell me who you are by `I am [your steam profile]` or provide a steamID with this command.");
+                    throw new ArgumentNullException(nameof(accountId));
+                }
             }
 
             using (var client = new WebClient())
@@ -169,7 +180,8 @@ namespace Dota_Geek.Modules
             }
         }
 
-        [Command("Teams", RunMode = RunMode.Async), Alias("Pro")]
+        [Command("Top Teams", RunMode = RunMode.Async)]
+        [Alias("teams", "pro")]
         [Summary("Gives you a list of top professional teams sorted by their ratings.")]
         public async Task ProTeamsTask()
         {
@@ -198,9 +210,14 @@ namespace Dota_Geek.Modules
         {
             if (accountId is null)
             {
-                accountId = LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId)
-                    ? $"[U:1:{longSteamId}]"
-                    : throw new ArgumentNullException();
+                if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                    accountId = $"[U:1:{longSteamId}]";
+                else
+                {
+                    await ReplyAsync(
+                        "Uhh I don't know you. Either tell me who you are by `I am [your steam profile]` or provide a steamID with this command.");
+                    throw new ArgumentNullException(nameof(accountId));
+                }
             }
 
             using (var client = new WebClient())
@@ -233,6 +250,131 @@ namespace Dota_Geek.Modules
 
                 my += "```";
 
+                await ReplyAsync(my);
+            }
+        }
+
+        [Command("Team", RunMode = RunMode.Async)]
+        public async Task TeamSearchTask(string queryOrTeamId)
+        {
+            var obj = TeamSearch(queryOrTeamId);
+            if (obj != null)
+            {
+                var r = new Random();
+                var embed = new EmbedBuilder
+                {
+                    ThumbnailUrl = obj.LogoUrl.ToString(),
+                    Color = new Color(r.Next(255), r.Next(255), r.Next(255))
+                };
+                embed.AddField("Name", obj.Name);
+                embed.AddField("Wins", obj.Wins, true);
+                embed.AddField("Losses", obj.Losses, true);
+                embed.AddField("Last Match Time",
+                    DateTimeOffset.FromUnixTimeSeconds(obj.LastMatchTime).DateTime + " UTC",
+                    true);
+                embed.AddField("Rating", obj.Rating, true);
+                embed.AddField("Players",
+                    $"`{Config.Bot.PrefixDictionary[Context.Guild.Id]}players team {queryOrTeamId.Replace("`", "\\`")}`", true);
+                embed.AddField("Matches",
+                    $"`{Config.Bot.PrefixDictionary[Context.Guild.Id]}matches team {queryOrTeamId}`", true);
+                await ReplyAsync(string.Empty, embed: embed.Build());
+            }
+            else
+            {
+                await ReplyAsync("Could not find any team with that ID or name");
+            }
+        }
+
+        private static Teams TeamSearch(string queryOrTeamId)
+        {
+            Teams obj;
+            using (var client = new WebClient())
+            {
+                var json = client.DownloadString("https://api.opendota.com/api/teams");
+                var obj2 = JsonConvert.DeserializeObject<List<Teams>>(json);
+
+                if (int.TryParse(queryOrTeamId, out _))
+                {
+                    obj = obj2.FirstOrDefault(x => x.TeamId.ToString().Contains(queryOrTeamId.ToLower()));
+                }
+                else
+                {
+                    var final = obj2.Where(x => x.Tag.ToLower().Contains(queryOrTeamId)).ToList();
+                    if (final.Any())
+                    {
+                        Console.WriteLine($"{queryOrTeamId} has {final.Count} tag responses");
+                        obj = final.First();
+                    }
+                    else
+                    {
+                        var p = obj2.Where(x => x.Name.ToLower().Contains(queryOrTeamId.ToLower())).ToList();
+                        Console.WriteLine($"{queryOrTeamId} has {p.Count} responses");
+                        obj = p.FirstOrDefault();
+                    }
+                }
+            }
+
+            return obj;
+        }
+
+        [Command("matches team", RunMode = RunMode.Async)]
+        public async Task ProTeamMatches(string queryOrTeamId)
+        {
+            var team = TeamSearch(queryOrTeamId);
+            if (team is null)
+            {
+                await ReplyAsync("No such team found");
+                return;
+            }
+
+            var url = $"https://api.opendota.com/api/teams/{team.TeamId}/matches";
+            using (var client = new WebClient())
+            {
+                var json = client.DownloadString(url);
+                var objL = (JsonConvert.DeserializeObject<List<ProTeamMatch>>(json)).Take(15);
+                var my =
+                    $"**{team.Name}**\n```{"League Name".PadRight(25) + "Versus".PadRight(20) + "Status".PadRight(8) + "Match ID".PadRight(15)}";
+                my += "\n" + (my.Length - 3 - team.Name.Length).Times('_');
+
+                my = objL.Aggregate(my,
+                    (current, obj) =>
+                        current + "\n" +
+                        obj.LeagueName.Truncate(25).PadRight(25) +
+                        obj.OpposingTeamName.Truncate(20).PadRight(20) +
+                        (obj.RadiantWin == obj.Radiant ? "Won" : "Lost").PadRight(8) +
+                        obj.MatchId.ToString().PadRight(15));
+
+                my += "```";
+                await ReplyAsync(my);
+            }
+        }
+
+        [Command("players team", RunMode = RunMode.Async)]
+        public async Task ProTeamPlayers(string queryOrTeamId)
+        {
+            var team = TeamSearch(queryOrTeamId);
+            if (team is null)
+            {
+                await ReplyAsync("No such team found");
+                return;
+            }
+
+            var url = $"https://api.opendota.com/api/teams/{team.TeamId}/players";
+            using (var client = new WebClient())
+            {
+                var json = client.DownloadString(url);
+                var objL = (JsonConvert.DeserializeObject<List<ProTeamPlayers>>(json)).Take(15);
+                var my =
+                    $"**{team.Name}**\n```{"Name".PadRight(20) + "Total Games".PadRight(17) + "Wins".PadRight(12) + "Current Member"}";
+                my += "\n" + (my.Length - 3 - team.Name.Length).Times('_');
+
+                my = objL.OrderBy(x => x.IsCurrentTeamMember == false).Aggregate(my,
+                    (current, obj) => current + ("\n" + obj.Name.PadRight(20) +
+                                                 obj.GamesPlayed.ToString().PadRight(17) +
+                                                 obj.Wins.ToString().PadRight(12) +
+                                                 ((obj.IsCurrentTeamMember ?? false) ? "Yes" : "No")));
+
+                my += "```";
                 await ReplyAsync(my);
             }
         }

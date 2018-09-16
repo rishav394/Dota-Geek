@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 
 namespace Dota_Geek.Modules
 {
-    /// <summary>Class containing code for help module</summary>>
+    /// <summary>Class containing code for help module</summary>
+    /// >
     public class Help : ModuleBase
     {
-        /// <summary>Gets the command service</summary>>
+        /// <summary>Gets the command service</summary>
+        /// >
         private readonly CommandService _commands;
 
-        /// <summary>Initializes a new instance of the <see cref="Help"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="Help" /> class.</summary>
         /// <param name="service">The service. </param>
         public Help(CommandService service)
         {
@@ -45,57 +44,44 @@ namespace Dota_Geek.Modules
             }
 
             // Looping thorough every module
-            foreach (ModuleInfo module in _commands.Modules.OrderBy(x => x.Commands.Count))
+            foreach (var module in _commands.Modules.OrderBy(x => x.Name))
             {
                 string fieldValue = null;
 
                 // Looping through every command in the selected module
-                foreach (CommandInfo cmd in module.Commands.OrderBy(x => x.Name))
+                foreach (var cmd in module.Commands.OrderBy(x => x.Name))
                 {
                     // Just a basic report stuff to log missed summaries
-                    if (string.IsNullOrWhiteSpace(cmd.Summary))
-                    {
-                        Console.WriteLine("No summary for " + cmd.Name);
-                    }
+                    if (string.IsNullOrWhiteSpace(cmd.Summary)) Console.WriteLine("No summary for " + cmd.Name);
 
                     // TODO: Boy I need a better way to stop the precondition check for these modules
-                    if (module.Name.ToLower().Equals("nsfw") || module.Name.ToLower().Equals("lyric")
-                                                             || module.Name.ToLower().Equals("9gag"))
+                    if (!module.Name.ToLower().Equals("help") && !module.Name.ToLower().Equals("ping"))
                     {
-                        fieldValue += $"{cmd.Aliases.First()}, ";
-                    }
-                    else
-                    {
-                        PreconditionResult result = await cmd.CheckPreconditionsAsync(Context);
-                        if (result.IsSuccess)
-                        {
-                            fieldValue += $"{cmd.Aliases.First()}, ";
-                        }
+                        var result = await cmd.CheckPreconditionsAsync(Context);
+                        if (result.IsSuccess) fieldValue += $"{cmd.Aliases.First()}, ";
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(fieldValue))
-                {
-                    // FieldValue could be empty when the precondition is false.
-                    // But ofc its not so we are here. Creating a field in the embed.
-                    fieldValue = fieldValue.Substring(0, fieldValue.Length - 2);
-                    builder.AddField(
-                        x =>
-                        {
-                            x.Name = $"\n💠 {module.Name}";
-                            x.Value = $"{fieldValue}";
-                            x.IsInline = false;
-                        });
-                }
+                if (string.IsNullOrWhiteSpace(fieldValue))
+                    continue;
+                // FieldValue could be empty when the precondition is false.
+                // But ofc its not so we are here. Creating a field in the embed.
+                fieldValue = fieldValue.Substring(0, fieldValue.Length - 2);
+                builder.AddField(
+                    x =>
+                    {
+                        x.Name = $"\n💠 {module.Name}";
+                        x.Value = $"{fieldValue}";
+                        x.IsInline = false;
+                    });
             }
 
             await ReplyAsync(string.Empty, false, builder.Build());
         }
-        
+
         /// <summary> The rateLimits task </summary>
-        /// <returns> The <see cref="Task"/> </returns>
+        /// <returns> The <see cref="Task" /> </returns>
         [Command("rateLimits")]
-        [Alias("ratelimit")]
         [Summary("Shows the rate limits for different actions")]
         public async Task RateLimitsTask()
         {
@@ -110,7 +96,7 @@ namespace Dota_Geek.Modules
 
         /// <summary> Gets more help on a command  </summary>
         /// <param name="command"> The command </param>
-        /// <returns> The <see cref="Task"/> </returns>
+        /// <returns> The <see cref="Task" /> </returns>
         private async Task DetailedHelpAsync([Remainder] string command)
         {
             var moduleFound = _commands.Modules.Select(mod => mod.Name.ToLower()).ToList().Contains(command);
@@ -121,7 +107,7 @@ namespace Dota_Geek.Modules
             }
 
             // `command` isn't a module for sure. Now checking if it is a command
-            SearchResult result = _commands.Search(Context, command);
+            var result = _commands.Search(Context, command);
             if (!result.IsSuccess)
             {
                 await ReplyAsync(
@@ -131,38 +117,30 @@ namespace Dota_Geek.Modules
 
             var builder = new EmbedBuilder
             {
-                Color = new Color(87, 222, 127),
-                Timestamp = DateTimeOffset.UtcNow.UtcDateTime
+                Color = new Color(87, 222, 127)
             };
 
-            foreach (CommandInfo cmd in result.Commands.Select(match => match.Command))
-            {
+            foreach (var cmd in result.Commands.Select(match => match.Command))
                 builder.AddField(
                     x =>
                     {
                         x.Name = $"Help on *{command}* coming right up";
                         var temp = "None";
-                        if (cmd.Aliases.Count != 1)
-                        {
-                            temp = string.Join(", ", cmd.Aliases);
-                        }
+                        if (cmd.Aliases.Count != 1) temp = string.Join(", ", cmd.Aliases);
 
                         x.Value = "**Aliases**: " + temp;
                         temp = "`" + Config.Bot.PrefixDictionary[Context.Guild.Id] + command;
                         if (cmd.Parameters.Count != 0)
-                        {
                             temp += " " + string.Join(
                                         " ",
                                         cmd.Parameters.Select(
                                             p => p.IsOptional ? "<" + p.Name + ">" : "[" + p.Name + "]"));
-                        }
 
                         temp += "`";
                         x.Value += $"\n**Usage**: {temp}\n**Summary**: {cmd.Summary}";
 
                         x.IsInline = false;
                     });
-            }
 
             builder.WithFooter("Note: Parameters under `[]` are mandatory and the ones under `<>` are optional");
 
@@ -171,7 +149,7 @@ namespace Dota_Geek.Modules
 
         /// <summary> The detailed module help async </summary>
         /// <param name="module"> The command </param>
-        /// <returns> The <see cref="Task"/> </returns>
+        /// <returns> The <see cref="Task" /> </returns>
         private async Task DetailedModuleHelpAsync(string module)
         {
             var first = _commands.Modules.First(mod => mod.Name.ToLower() == module);
@@ -179,14 +157,10 @@ namespace Dota_Geek.Modules
             {
                 Title = "List of commands under " + module.ToUpper() + " module",
                 Description = string.Empty,
-                Color = new Color(87, 222, 127),
-                Timestamp = DateTimeOffset.UtcNow.UtcDateTime
+                Color = new Color(87, 222, 127)
             };
             embed.WithFooter("Use `help [command-name]` for more information on the command");
-            foreach (var cmds in first.Commands)
-            {
-                embed.Description += $"{cmds.Name}, ";
-            }
+            foreach (var cmds in first.Commands) embed.Description += $"{cmds.Name}, ";
 
             embed.Description = embed.Description.Substring(0, embed.Description.Length - 2);
             await ReplyAsync(string.Empty, false, embed.Build());
