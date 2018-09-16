@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using Dota_Geek.DataTypes;
 using Newtonsoft.Json;
 
@@ -12,6 +11,33 @@ namespace Dota_Geek.Modules
     [Name("Define yourself")]
     public class Subscribe : ModuleBase<SocketCommandContext>
     {
+        [Command("Who is", RunMode = RunMode.Async)]
+        [Summary("Ill let you know who someone is if I know him")]
+        public async Task WhoIsTask(SocketGuildUser userMention)
+        {
+            if (LinkedAccounts.UserDictionary.ContainsKey(userMention.Id))
+            {
+                using (var client = new WebClient())
+                {
+                    var url = $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
+                    var json = client.DownloadString(url);
+                    var obj = JsonConvert.DeserializeObject<SteamConvertData>(json);
+                    var reply =
+                        $"I know {userMention.Username} as [{obj.Name}](http://steamcommunity.com/profiles/{obj.Steamid64}) 🙂";
+                    await ReplyAsync(string.Empty, false, new EmbedBuilder
+                    {
+                        Description = reply
+                    }.Build());
+                }
+            }
+            else
+            {
+                await ReplyAsync(
+                    $"Idk who {userMention.Username} is but i'll be glad to meet {userMention.Nickname}" +
+                    $" at `{Config.Bot.PrefixDictionary[Context.Guild.Id]}I am [steam ID]`");
+            }
+        }
+
         [Command("Who am I", RunMode = RunMode.Async)]
         [Alias("Who am i?")]
         [Summary("That's really a dumb thing for a human to ask a robot who he is")]

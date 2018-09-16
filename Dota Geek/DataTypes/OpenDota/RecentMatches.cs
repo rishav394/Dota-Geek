@@ -20,7 +20,7 @@ namespace Dota_Geek.DataTypes.OpenDota
 
         [JsonProperty("start_time")] public long StartTime { get; set; }
 
-        [JsonProperty("version")] public long Version { get; set; }
+        [JsonProperty("version")] public long? Version { get; set; }
 
         [JsonProperty("kills")] public long Kills { get; set; }
 
@@ -42,16 +42,16 @@ namespace Dota_Geek.DataTypes.OpenDota
 
         [JsonProperty("last_hits")] public long LastHits { get; set; }
 
-        [JsonProperty("lane")] public long Lane { get; set; }
+        [JsonProperty("lane")] public long? Lane { get; set; }
 
-        [JsonProperty("lane_role")] public long LaneRole { get; set; }
+        [JsonProperty("lane_role")] public long? LaneRole { get; set; }
 
-        [JsonProperty("is_roaming")] public bool IsRoaming { get; set; }
+        [JsonProperty("is_roaming")] public bool? IsRoaming { get; set; }
 
-        [JsonProperty("cluster")] public long Cluster { get; set; }
+        [JsonProperty("cluster")] public long? Cluster { get; set; }
 
-        [JsonProperty("leaver_status")] public long LeaverStatus { get; set; }
+        [JsonProperty("leaver_status")] public long? LeaverStatus { get; set; }
 
-        [JsonProperty("party_size")] public long PartySize { get; set; }
+        [JsonProperty("party_size")] public long? PartySize { get; set; }
     }
 }

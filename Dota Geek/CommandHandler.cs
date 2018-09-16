@@ -18,6 +18,25 @@ namespace Dota_Geek
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
+            _client.JoinedGuild += Join;
+            _client.LeftGuild += Left;
+            _client.Ready += Ready;
+        }
+
+        private Task Ready()
+        {
+            Global.Client = _client;
+            return Task.CompletedTask;
+        }
+
+        private Task Left(SocketGuild arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Task Join(SocketGuild arg)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task HandleCommandAsync(SocketMessage s)

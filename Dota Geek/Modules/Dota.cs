@@ -18,6 +18,28 @@ namespace Dota_Geek.Modules
     {
         public static string SteamApiKey { get; } = "902AC23891ED8519FFCDE9D49DC65725";
 
+        [Command("last match")]
+        public async Task LasTask(string accountId)
+        {
+            await ReplyAsync(LastMatch(accountId, out _));
+        }
+
+        public static string LastMatch(string accountId, out bool lastHour)
+        {
+            using (var client = new WebClient())
+            {
+                var my = accountId.Parser();
+                var url = $"https://api.opendota.com/api/players/{my.Uid}/recentMatches";
+                var json = client.DownloadString(url);
+                var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json);
+                var last = recent.First();
+                lastHour = DateTimeOffset.Now - DateTimeOffset.FromUnixTimeSeconds(last.StartTime) <
+                           TimeSpan.FromMilliseconds(Global.Interval);
+                var final = $"**Match Data for {my.Name}**\n" + MatchDataGiver(last.MatchId);
+                return final;
+            }
+        }
+
         [Command("Profile", RunMode = RunMode.Async)]
         [Summary("Shows the target's current Profile with some nasty details")]
         public async Task ProfileTask(string accountId = null)
@@ -155,29 +177,36 @@ namespace Dota_Geek.Modules
                 }
             }
 
+            var my = RecentMatches(accountId);
+            await ReplyAsync(my);
+        }
+
+        private static string RecentMatches(string accountId)
+        {
+            List<RecentMatches> recent;
             using (var client = new WebClient())
             {
                 var url = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/recentMatches";
                 var json = client.DownloadString(url);
-                var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json);
-
-                var my =
-                    $"```{"Name".PadRight(20, ' ') + "Kills".PadRight(8, ' ') + "Death".PadRight(8, ' ') + "Assist".PadRight(8, ' ') + "XPM".PadRight(8, ' ') + "GPM".PadRight(8, ' ') + "MatchID".PadRight(8, ' ')}";
-                for (var i = 1; i <= 67; i++) my += "_";
-                my += "\n";
-                foreach (var recentMatches in recent)
-                    my += recentMatches.HeroId.HeroName().PadRight(20, ' ')
-                          + recentMatches.Kills.ToString().PadRight(8, ' ')
-                          + recentMatches.Deaths.ToString().PadRight(8, ' ')
-                          + recentMatches.Assists.ToString().PadRight(8, ' ')
-                          + recentMatches.XpPerMin.ToString().PadRight(8, ' ')
-                          + recentMatches.GoldPerMin.ToString().PadRight(8, ' ')
-                          + recentMatches.MatchId
-                          + "\n";
-
-                my += "```";
-                await ReplyAsync(my);
+                recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json);
             }
+
+            var my =
+                $"```{"Name".PadRight(20, ' ') + "Kills".PadRight(8, ' ') + "Death".PadRight(8, ' ') + "Assist".PadRight(8, ' ') + "XPM".PadRight(8, ' ') + "GPM".PadRight(8, ' ') + "MatchID".PadRight(8, ' ')}";
+            for (var i = 1; i <= 67; i++) my += "_";
+            my += "\n";
+            foreach (var recentMatches in recent)
+                my += recentMatches.HeroId.HeroName().PadRight(20, ' ')
+                      + recentMatches.Kills.ToString().PadRight(8, ' ')
+                      + recentMatches.Deaths.ToString().PadRight(8, ' ')
+                      + recentMatches.Assists.ToString().PadRight(8, ' ')
+                      + recentMatches.XpPerMin.ToString().PadRight(8, ' ')
+                      + recentMatches.GoldPerMin.ToString().PadRight(8, ' ')
+                      + recentMatches.MatchId
+                      + "\n";
+
+            my += "```";
+            return my;
         }
 
         [Command("Top Teams", RunMode = RunMode.Async)]
