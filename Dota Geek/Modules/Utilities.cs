@@ -1,31 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 
 namespace Dota_Geek.Modules
 {
-    [Name("Admin Commands")]
-    [RequireUserPermission(GuildPermission.Administrator)]
     public class Utilities : ModuleBase<SocketCommandContext>
     {
-        [Command("prefix")]
-        [Summary("Change or view my prefix")]
-        public async Task PrefixTask(string newPrefix = null)
+        [Name("Utilities")]
+        [Command("Ping", RunMode = RunMode.Async)]
+        [Alias("latency", "pong", "rtt")]
+        [Summary("Returns the current estimated round-trip latency over WebSocket and REST")]
+        public async Task LatencyAsyncTask()
         {
-            if (string.IsNullOrEmpty(newPrefix))
+            IUserMessage message;
+            Stopwatch stopwatch;
+            int heartbeat = Context.Client.Latency;
+
+            var tcs = new TaskCompletionSource<long>();
+            Task timeout = Task.Delay(TimeSpan.FromSeconds(30));
+
+            Task TestMessageAsync(SocketMessage arg)
             {
-                await ReplyAsync($"Hmm it was hard to remember but I think I am knows as" +
-                                 $" `{Config.Bot.PrefixDictionary[Context.Guild.Id]}` in this Party.");
+                if (arg.Id != message?.Id)
+                {
+                    return Task.CompletedTask;
+                }
+
+                tcs.SetResult(stopwatch.ElapsedMilliseconds);
+                return Task.CompletedTask;
+            }
+
+            stopwatch = Stopwatch.StartNew();
+            message = await ReplyAsync($"Hearbeat: {heartbeat}ms: init: ---, rtt: ---");
+            long init = stopwatch.ElapsedMilliseconds;
+
+            Context.Client.MessageReceived += TestMessageAsync;
+            Task task = await Task.WhenAny(tcs.Task, timeout);
+            Context.Client.MessageReceived -= TestMessageAsync;
+            stopwatch.Stop();
+
+            if (task == timeout)
+            {
+                await message.ModifyAsync(x => x.Content = $"Heartbeat: {heartbeat}ms, init: {init}ms, rtt: timed out");
             }
             else
             {
-                Config.Bot.PrefixDictionary[Context.Guild.Id] = newPrefix;
-                Config.Save();
-                await ReplyAsync($"Alright Alright in the latest patch people here have to call me `{newPrefix}`");
+                long rtt = await tcs.Task;
+                await message.ModifyAsync(x => x.Content = $"Heartbeat: {heartbeat}ms, init: {init}ms, rtt: {rtt}ms");
             }
+        }
+
+        [Command("Invite")]
+        public async Task InviteTask()
+        {
+            var embed = new EmbedBuilder
+            {
+                Description =
+                    $"1. [Invite](https://discordapp.com/api/oauth2/authorize?client_id=485759803155546113&permissions=859307344&scope=bot)\n" +
+                    $"2. [Vote](https://discordbots.org/bot/485759803155546113/vote)\n" +
+                    $"3. [Support Server](https://discord.gg/8wa4TZ5)",
+                ImageUrl = "https://discordbots.org/api/widget/485759803155546113.png"
+            };
+            await ReplyAsync(string.Empty, embed: embed.Build());
         }
     }
 }

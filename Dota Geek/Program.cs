@@ -10,48 +10,31 @@ namespace Dota_Geek
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        static void Main()
+        private static void Main()
         {
-            new Program().InitializeAsync().GetAwaiter().GetResult();
+            new Program().StartAsync().GetAwaiter().GetResult();
         }
 
-        private async Task InitializeAsync()
+        private async Task StartAsync()
         {
-            if (string.IsNullOrEmpty(Config.Bot.Token))
-            {
-                Console.WriteLine("No token detected");
-                Console.ReadKey();
-                return;
-            }
-
+            if (string.IsNullOrEmpty(Config.Bot.Token)) return;
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose,
-                MessageCacheSize = 50000
             });
-
-            _client.Log += ClientLog;
-            _client.Ready += ClientReady;
-
+            _client.Log += Log;
             await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
             await _client.StartAsync();
             await _client.SetGameAsync("Dota 2", null, ActivityType.Watching);
 
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
-
             await Task.Delay(-1);
         }
 
-        private Task ClientReady()
+        private Task Log(LogMessage arg)
         {
-            Console.WriteLine($"I am in {_client.Guilds.Count} servers");
-            return Task.CompletedTask;
-        }
-
-        private Task ClientLog(LogMessage arg)
-        {
-            Console.WriteLine(arg.Message);
+            Console.WriteLine(arg);
             return Task.CompletedTask;
         }
     }
