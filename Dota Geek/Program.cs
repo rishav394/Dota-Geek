@@ -25,27 +25,28 @@ namespace Dota_Geek
             foreach (var pair in TrackedAccounts.TrackDictionary)
             {
                 var final = Dota.LastMatch($"[U:1:{pair.Key}]", out var lastHour);
-                if (!lastHour)
+                if (lastHour)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("POST " + final.Split('\n')[0]);
+                    Console.ResetColor();
+
+                    foreach (var data in pair.Value)
+                    {
+                        var myChannel = Global.Client.GetGuild(data.GuildId).GetChannel(data.ChannelId) as ITextChannel;
+                        if (myChannel is null)
+                        {
+                            continue;
+                        }
+
+                        await myChannel.SendMessageAsync(final);
+                    }
+                }
+                else
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("SKIP " + final.Split('\n')[0]);
                     Console.ResetColor();
-                    continue;
-                }
-
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("POST " + final.Split('\n')[0]);
-                Console.ResetColor();
-
-                foreach (var data in pair.Value)
-                {
-                    var myChannel = Global.Client.GetGuild(data.GuildId).GetChannel(data.ChannelId) as ITextChannel;
-                    if (myChannel is null)
-                    {
-                        continue;
-                    }
-
-                    await myChannel.SendMessageAsync(final);
                 }
             }
         }

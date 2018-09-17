@@ -284,7 +284,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Team", RunMode = RunMode.Async)]
-        public async Task TeamSearchTask(string queryOrTeamId)
+        public async Task TeamSearchTask([Remainder] string queryOrTeamId)
         {
             var obj = TeamSearch(queryOrTeamId);
             if (obj != null)
@@ -347,7 +347,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("matches team", RunMode = RunMode.Async)]
-        public async Task ProTeamMatches(string queryOrTeamId)
+        public async Task ProTeamMatches([Remainder] string queryOrTeamId)
         {
             var team = TeamSearch(queryOrTeamId);
             if (team is null)
@@ -379,7 +379,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("players team", RunMode = RunMode.Async)]
-        public async Task ProTeamPlayers(string queryOrTeamId)
+        public async Task ProTeamPlayers([Remainder] string queryOrTeamId)
         {
             var team = TeamSearch(queryOrTeamId);
             if (team is null)
