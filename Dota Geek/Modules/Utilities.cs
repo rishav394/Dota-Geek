@@ -17,17 +17,14 @@ namespace Dota_Geek.Modules
         {
             IUserMessage message;
             Stopwatch stopwatch;
-            int heartbeat = Context.Client.Latency;
+            var heartbeat = Context.Client.Latency;
 
             var tcs = new TaskCompletionSource<long>();
-            Task timeout = Task.Delay(TimeSpan.FromSeconds(30));
+            var timeout = Task.Delay(TimeSpan.FromSeconds(30));
 
             Task TestMessageAsync(SocketMessage arg)
             {
-                if (arg.Id != message?.Id)
-                {
-                    return Task.CompletedTask;
-                }
+                if (arg.Id != message?.Id) return Task.CompletedTask;
 
                 tcs.SetResult(stopwatch.ElapsedMilliseconds);
                 return Task.CompletedTask;
@@ -35,10 +32,10 @@ namespace Dota_Geek.Modules
 
             stopwatch = Stopwatch.StartNew();
             message = await ReplyAsync($"Hearbeat: {heartbeat}ms: init: ---, rtt: ---");
-            long init = stopwatch.ElapsedMilliseconds;
+            var init = stopwatch.ElapsedMilliseconds;
 
             Context.Client.MessageReceived += TestMessageAsync;
-            Task task = await Task.WhenAny(tcs.Task, timeout);
+            var task = await Task.WhenAny(tcs.Task, timeout);
             Context.Client.MessageReceived -= TestMessageAsync;
             stopwatch.Stop();
 
@@ -48,20 +45,37 @@ namespace Dota_Geek.Modules
             }
             else
             {
-                long rtt = await tcs.Task;
+                var rtt = await tcs.Task;
                 await message.ModifyAsync(x => x.Content = $"Heartbeat: {heartbeat}ms, init: {init}ms, rtt: {rtt}ms");
             }
+        }
+
+        [Command("Support")]
+        public async Task SupportTask()
+        {
+            await Invite();
+        }
+
+        [Command("Vote")]
+        public async Task VoteTask()
+        {
+            await Invite();
         }
 
         [Command("Invite")]
         public async Task InviteTask()
         {
+            await Invite();
+        }
+
+        private async Task Invite()
+        {
             var embed = new EmbedBuilder
             {
                 Description =
-                    $"1. [Invite](https://discordapp.com/api/oauth2/authorize?client_id=485759803155546113&permissions=859307344&scope=bot)\n" +
-                    $"2. [Vote](https://discordbots.org/bot/485759803155546113/vote)\n" +
-                    $"3. [Support Server](https://discord.gg/8wa4TZ5)",
+                    "1. [Invite](https://discordapp.com/api/oauth2/authorize?client_id=485759803155546113&permissions=859307344&scope=bot)\n" +
+                    "2. [Vote](https://discordbots.org/bot/485759803155546113/vote)\n" +
+                    "3. [Support Server](https://discord.gg/8wa4TZ5)",
                 ImageUrl = "https://discordbots.org/api/widget/485759803155546113.png"
             };
             await ReplyAsync(string.Empty, embed: embed.Build());

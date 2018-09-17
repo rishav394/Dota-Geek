@@ -10,6 +10,8 @@ namespace Dota_Geek
     {
         private DiscordSocketClient _client;
         private CommandHandler _handler;
+        private DiscordBotListHandler _discordBotListHandler;
+
 
         private static void Main()
         {
@@ -58,6 +60,8 @@ namespace Dota_Geek
             {
                 LogLevel = LogSeverity.Verbose,
             });
+
+            _client.Ready += Ready;
             _client.Log += Log;
 
             await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
@@ -67,6 +71,13 @@ namespace Dota_Geek
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
             await Task.Delay(-1);
+        }
+
+        private async Task Ready()
+        {
+            Global.Client = _client;
+            _discordBotListHandler = new DiscordBotListHandler(485759803155546113, Config.Bot.DblToken);
+            await _discordBotListHandler.UpdateAsync();
         }
 
         private static Task Log(LogMessage arg)

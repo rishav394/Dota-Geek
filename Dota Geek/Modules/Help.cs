@@ -77,6 +77,11 @@ namespace Dota_Geek.Modules
             }
 
             await ReplyAsync(string.Empty, false, builder.Build());
+            await ReplyAsync(string.Empty, false, new EmbedBuilder
+            {
+                Description = "You can always use `support` " +
+                              "command just in case you ever need help from my creator. He is always so ready to help."
+            }.Build());
         }
 
         /// <summary> The rateLimits task </summary>

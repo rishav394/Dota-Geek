@@ -24,7 +24,8 @@ namespace Dota_Geek
                 Bot = new BotConfig
                 {
                     Token = null,
-                    PrefixDictionary = new Dictionary<ulong, string>()
+                    PrefixDictionary = new Dictionary<ulong, string>(),
+                    DblToken = null
                 };
                 Save();
             }
@@ -40,6 +41,7 @@ namespace Dota_Geek
         {
             public string Token { get; set; }
             public Dictionary<ulong, string> PrefixDictionary { get; set; }
+            public string DblToken { get; set; }
         }
     }
 }

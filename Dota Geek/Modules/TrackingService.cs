@@ -40,7 +40,7 @@ namespace Dota_Geek.Modules
             var steam = steamId.Parser();
             var steam32 = steam.Uid;
 
-            //If user is not pro
+            if (!Context.User.IsPro())
             {
                 if (UserGuildRelation.UserGuildRelationDictionary.ContainsKey(Context.User.Id))
                 {
@@ -54,7 +54,8 @@ namespace Dota_Geek.Modules
                             if (pair.Value.Any())
                             {
                                 var data = ("[U:1:" + pair.Value.First().ToString() + "]").Parser();
-                                await ReplyAsync($"You are already tracking **{data.Name}** ({data.Uid}) and are not a pro member :(");
+                                await ReplyAsync(
+                                    $"You are already tracking **{data.Name}** ({data.Uid}) and are not a pro member so I cant let you track more than one Steam Profile");
                                 return;
                             }
 
@@ -79,7 +80,7 @@ namespace Dota_Geek.Modules
                     if (data.GuildId != Context.Guild.Id) continue;
                     await ReplyAsync(
                         $"Someone is already tracking {steamId} ({steam32}) in {((ITextChannel) Context.Client.GetChannel(data.ChannelId)).Mention}");
-                    // If user is not pro
+                    if (!Context.User.IsPro())
                     {
                         UserGuildRelation.UserGuildRelationDictionary[Context.User.Id][Context.Guild.Id]
                             .Remove(steam32);

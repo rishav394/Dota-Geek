@@ -18,25 +18,24 @@ namespace Dota_Geek
             _service = new CommandService();
             await _service.AddModulesAsync(Assembly.GetEntryAssembly());
             _client.MessageReceived += HandleCommandAsync;
-            _client.JoinedGuild += Join;
-            _client.LeftGuild += Left;
-            _client.Ready += Ready;
+            _client.JoinedGuild += JoinAsync;
+            _client.LeftGuild += LeftAsync;
         }
 
-        private Task Ready()
+        private async Task LeftAsync(SocketGuild arg)
         {
-            Global.Client = _client;
-            return Task.CompletedTask;
+            await Global.MeBot.Result.UpdateStatsAsync(Global.Client.Guilds.Count);
+            var channel = Global.Client.GetGuild(480857253092524032).GetChannel(491281793039859723) as ITextChannel;
+            if (channel is null) return;
+            await channel.SendMessageAsync($"I just left {arg.Name} :slight_frown: ");
         }
 
-        private Task Left(SocketGuild arg)
+        private async Task JoinAsync(SocketGuild arg)
         {
-            throw new NotImplementedException();
-        }
-
-        private Task Join(SocketGuild arg)
-        {
-            throw new NotImplementedException();
+            await Global.MeBot.Result.UpdateStatsAsync(Global.Client.Guilds.Count);
+            var channel = Global.Client.GetGuild(480857253092524032).GetChannel(491281793039859723) as ITextChannel;
+            if (channel is null) return;
+            await channel.SendMessageAsync($"I just joined {arg.Name} :tada:");
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
