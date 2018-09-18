@@ -39,22 +39,26 @@ namespace Dota_Geek.Modules
                 }
 
                 var last = recent.First();
+                var timeNow =
+                    DateTimeOffset.FromUnixTimeSeconds((Int32) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)))
+                        .TotalSeconds);
                 var completedTime = DateTimeOffset.FromUnixTimeSeconds(last.StartTime)
                     .Add(TimeSpan.FromSeconds(last.Duration));
                 var myTimeSpan = TimeSpan.FromMilliseconds(Global.Interval);
-                var difference = DateTimeOffset.UtcNow - completedTime;
+                var difference = timeNow - completedTime;
+                lastHour = difference < myTimeSpan;
 
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    Console.WriteLine($"Querying time dependency for {my.Name}");
-                    Console.WriteLine(DateTimeOffset.UtcNow);
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"\n\nQuerying time dependency for {my.Name}");
+                    Console.WriteLine(timeNow);
                     Console.WriteLine(completedTime);
                     Console.WriteLine(difference);
                     Console.WriteLine(myTimeSpan);
+                    Console.WriteLine(lastHour + "\n\n");
                     Console.ResetColor();
                 }
 
-                lastHour = difference < myTimeSpan;
                 var final = $"**Match Data for {my.Name}**\n" + MatchDataGiver(last.MatchId);
                 return final;
             }
@@ -264,6 +268,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Hero ranking", RunMode = RunMode.Async)]
+        [Alias("Hero Rankings", "Hero Ranks")]
         [Summary("Gives you the target's hero list with specific performance.")]
         public async Task HeroRankingTask(string accountId = null)
         {
