@@ -30,5 +30,4 @@ namespace Dota_Geek
             File.WriteAllText("Resources/TrackedAccounts.json", json);
         }
     }
-    
 }

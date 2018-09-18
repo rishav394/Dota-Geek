@@ -16,10 +16,10 @@ namespace Dota_Geek.Modules
         public async Task WhoIsTask(SocketGuildUser userMention)
         {
             if (LinkedAccounts.UserDictionary.ContainsKey(userMention.Id))
-            {
                 using (var client = new WebClient())
                 {
-                    var url = $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
+                    var url =
+                        $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
                     var json = client.DownloadString(url);
                     var obj = JsonConvert.DeserializeObject<SteamConvertData>(json);
                     var reply =
@@ -29,13 +29,10 @@ namespace Dota_Geek.Modules
                         Description = reply
                     }.Build());
                 }
-            }
             else
-            {
                 await ReplyAsync(
                     $"Idk who {userMention.Username} is but i'll be glad to meet {userMention.Nickname}" +
                     $" at `{Config.Bot.PrefixDictionary[Context.Guild.Id]}I am [steam ID]`");
-            }
         }
 
         [Command("Who am I", RunMode = RunMode.Async)]
@@ -44,10 +41,10 @@ namespace Dota_Geek.Modules
         public async Task WhoTask()
         {
             if (LinkedAccounts.UserDictionary.ContainsKey(Context.User.Id))
-            {
                 using (var client = new WebClient())
                 {
-                    var url = $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
+                    var url =
+                        $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
                     var json = client.DownloadString(url);
                     var obj = JsonConvert.DeserializeObject<SteamConvertData>(json);
                     var reply =
@@ -57,12 +54,9 @@ namespace Dota_Geek.Modules
                         Description = reply
                     }.Build());
                 }
-            }
             else
-            {
                 await ReplyAsync("Hmm looks like we have never met before. " +
                                  "\n*but don't you worry Ive arranged us a secret meeting at* `I am [you account]` 😉");
-            }
         }
 
         [Command("I am", RunMode = RunMode.Async)]
@@ -85,7 +79,8 @@ namespace Dota_Geek.Modules
                 }
                 else
                 {
-                    url = $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
+                    url =
+                        $"https://steamid.venner.io/raw.php?input=[U:1:{LinkedAccounts.UserDictionary[Context.User.Id]}]";
                     json = client.DownloadString(url);
                     obj = JsonConvert.DeserializeObject<SteamConvertData>(json);
                     reply =

@@ -10,10 +10,7 @@ namespace Dota_Geek
 
         static Config()
         {
-            if (!Directory.Exists("Resources"))
-            {
-                Directory.CreateDirectory("Resources");
-            }
+            if (!Directory.Exists("Resources")) Directory.CreateDirectory("Resources");
 
             if (File.Exists("Resources/Config.json"))
             {

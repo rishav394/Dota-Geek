@@ -44,16 +44,15 @@ namespace Dota_Geek.Modules
             {
                 if (UserGuildRelation.UserGuildRelationDictionary.ContainsKey(Context.User.Id))
                 {
-                    Dictionary<ulong, List<long>> temp = UserGuildRelation.UserGuildRelationDictionary[Context.User.Id];
+                    var temp = UserGuildRelation.UserGuildRelationDictionary[Context.User.Id];
                     temp.TryAdd(Context.Guild.Id, new List<long>());
 
-                    foreach (KeyValuePair<ulong, List<long>> pair in temp)
-                    {
+                    foreach (var pair in temp)
                         if (pair.Key == Context.Guild.Id)
                         {
                             if (pair.Value.Any())
                             {
-                                var data = ("[U:1:" + pair.Value.First().ToString() + "]").Parser();
+                                var data = ("[U:1:" + pair.Value.First() + "]").Parser();
                                 await ReplyAsync(
                                     $"You are already tracking **{data.Name}** ({data.Uid}) and are not a pro member so I cant let you track more than one Steam Profile");
                                 return;
@@ -62,7 +61,6 @@ namespace Dota_Geek.Modules
                             pair.Value.Add(steam32);
                             break;
                         }
-                    }
                 }
                 else
                 {
@@ -79,12 +77,10 @@ namespace Dota_Geek.Modules
                 {
                     if (data.GuildId != Context.Guild.Id) continue;
                     await ReplyAsync(
-                        $"Someone is already tracking {steamId} ({steam32}) in {((ITextChannel) Context.Client.GetChannel(data.ChannelId)).Mention}");
+                        $"Someone is already tracking {steam.Name} ({steam32}) in {((ITextChannel) Context.Client.GetChannel(data.ChannelId)).Mention}");
                     if (!Context.User.IsPro())
-                    {
                         UserGuildRelation.UserGuildRelationDictionary[Context.User.Id][Context.Guild.Id]
                             .Remove(steam32);
-                    }
 
                     UserGuildRelation.Save();
                     TrackedAccounts.Save();
@@ -115,7 +111,8 @@ namespace Dota_Geek.Modules
 
             TrackedAccounts.Save();
             UserGuildRelation.Save();
-            await ReplyAsync($"I will be posting {steamId}'s ({steam32}) new matches here in this channel every Hour :tada:");
+            await ReplyAsync(
+                $"I will be posting {steam.Name}'s ({steam32}) new matches here in this channel every Hour :tada:");
         }
     }
 }

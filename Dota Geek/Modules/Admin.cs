@@ -14,7 +14,7 @@ namespace Dota_Geek.Modules
         {
             if (string.IsNullOrEmpty(newPrefix))
             {
-                await ReplyAsync($"Hmm it was hard to remember but I think I am knows as" +
+                await ReplyAsync("Hmm it was hard to remember but I think I am knows as" +
                                  $" `{Config.Bot.PrefixDictionary[Context.Guild.Id]}` in this Party.");
             }
             else

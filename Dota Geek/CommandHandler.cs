@@ -43,7 +43,7 @@ namespace Dota_Geek
             if (!(s is SocketUserMessage msg)) return;
             var context = new SocketCommandContext(_client, msg);
             var argPos = 0;
-            
+
             if (!Config.Bot.PrefixDictionary.ContainsKey(context.Guild.Id))
             {
                 Config.Bot.PrefixDictionary.Add(context.Guild.Id, "$");
@@ -52,24 +52,31 @@ namespace Dota_Geek
 
             if (msg.HasStringPrefix(Config.Bot.PrefixDictionary[context.Guild.Id], ref argPos) ||
                 msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
-            {
-                var typing = context.Channel.EnterTypingState();
-                var result = await _service.ExecuteAsync(context, argPos);
-                typing.Dispose();
-                if (!result.IsSuccess)
+                try
                 {
-                    Console.WriteLine(result.ErrorReason + $" at {context.Guild.Name}");
-                    if (result.Error == CommandError.UnknownCommand)
+                    var typing = context.Channel.EnterTypingState();
+                    var result = await _service.ExecuteAsync(context, argPos);
+                    typing.Dispose();
+                    if (!result.IsSuccess)
                     {
-                        var guildEmote = Emote.Parse("<:unknowscmd:461157571701506049>");
-                        await msg.AddReactionAsync(guildEmote);
-                    }
-                    else
-                    {
-                        await context.Channel.SendMessageAsync(result.Error.ToString());
+                        Console.WriteLine(result.ErrorReason + $" at {context.Guild.Name}");
+                        if (result.Error == CommandError.UnknownCommand)
+                        {
+                            var guildEmote = Emote.Parse("<:unknowscmd:461157571701506049>");
+                            await msg.AddReactionAsync(guildEmote);
+                        }
+                        else
+                        {
+                            await context.Channel.SendMessageAsync(result.Error.ToString());
+                        }
                     }
                 }
-            }
+                catch (Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                }
         }
     }
 }

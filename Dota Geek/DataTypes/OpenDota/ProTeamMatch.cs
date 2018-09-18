@@ -1,13 +1,9 @@
-﻿namespace Dota_Geek.DataTypes.OpenDota
+﻿using System;
+using Newtonsoft.Json;
+
+namespace Dota_Geek.DataTypes.OpenDota
 {
-    using System;
-    using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-
-    public partial class ProTeamMatch
+    public class ProTeamMatch
     {
         [JsonProperty("match_id", NullValueHandling = NullValueHandling.Ignore)]
         public long? MatchId { get; set; }
@@ -39,7 +35,6 @@
         [JsonProperty("opposing_team_name", NullValueHandling = NullValueHandling.Ignore)]
         public string OpposingTeamName { get; set; }
 
-        [JsonProperty("opposing_team_logo")]
-        public Uri OpposingTeamLogo { get; set; }
+        [JsonProperty("opposing_team_logo")] public Uri OpposingTeamLogo { get; set; }
     }
 }

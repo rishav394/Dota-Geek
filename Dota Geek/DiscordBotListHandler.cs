@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DiscordBotsList.Api;
 
 namespace Dota_Geek
 {
-    class DiscordBotListHandler
+    internal class DiscordBotListHandler
     {
         public DiscordBotListHandler(ulong botDiscordId, string botToken)
         {

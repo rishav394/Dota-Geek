@@ -11,10 +11,7 @@
         public static string Times(this int times, char value)
         {
             var my = string.Empty;
-            for (var i = 0; i < times; i++)
-            {
-                my += value;
-            }
+            for (var i = 0; i < times; i++) my += value;
 
             return my;
         }

@@ -32,9 +32,28 @@ namespace Dota_Geek.Modules
                 var url = $"https://api.opendota.com/api/players/{my.Uid}/recentMatches";
                 var json = client.DownloadString(url);
                 var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json);
+                if (!recent.Any())
+                {
+                    lastHour = false;
+                    return "Our sad guy hasn't played dota in a while or his profile / dota client is private af";
+                }
+
                 var last = recent.First();
-                lastHour = DateTimeOffset.Now - DateTimeOffset.FromUnixTimeSeconds(last.StartTime) <
-                           TimeSpan.FromMilliseconds(Global.Interval);
+                var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(last.StartTime);
+                var myTimeSpan = TimeSpan.FromMilliseconds(Global.Interval);
+                var difference = DateTimeOffset.UtcNow - dateTimeOffset;
+
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.WriteLine($"Querying time dependency for {my.Name}");
+                    Console.WriteLine(DateTimeOffset.UtcNow);
+                    Console.WriteLine(dateTimeOffset);
+                    Console.WriteLine(difference);
+                    Console.WriteLine(myTimeSpan);
+                    Console.ResetColor();
+                }
+
+                lastHour = difference < myTimeSpan;
                 var final = $"**Match Data for {my.Name}**\n" + MatchDataGiver(last.MatchId);
                 return final;
             }
@@ -47,7 +66,9 @@ namespace Dota_Geek.Modules
             if (accountId is null)
             {
                 if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                {
                     accountId = $"[U:1:{longSteamId}]";
+                }
                 else
                 {
                     await ReplyAsync(
@@ -71,7 +92,7 @@ namespace Dota_Geek.Modules
                 if (obj.RankTier != null)
                     embed.AddField("Medal", ((int) (obj.RankTier / 10)).ParseMedal() + " " + obj.RankTier % 10, true);
                 else
-                    throw new ArgumentNullException($"Private Profile Probably.");
+                    throw new ArgumentNullException("Private Profile Probably.");
 
                 var winLose = WinTask(steam32Parse.ToString());
                 var win = winLose.win;
@@ -91,7 +112,7 @@ namespace Dota_Geek.Modules
                 var url3 = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/recentMatches";
                 var json3 = client.DownloadString(url3);
                 var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json3);
-                var time = DateTimeOffset.FromUnixTimeSeconds(recent.First().StartTime);
+                var time = DateTimeOffset.FromUnixTimeSeconds(recent.FirstOrDefault().StartTime);
 
                 embed.AddField("Last Played", time.DateTime + " UTC", true);
 
@@ -168,7 +189,9 @@ namespace Dota_Geek.Modules
             if (accountId is null)
             {
                 if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                {
                     accountId = $"[U:1:{longSteamId}]";
+                }
                 else
                 {
                     await ReplyAsync(
@@ -240,7 +263,9 @@ namespace Dota_Geek.Modules
             if (accountId is null)
             {
                 if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                {
                     accountId = $"[U:1:{longSteamId}]";
+                }
                 else
                 {
                     await ReplyAsync(
@@ -259,6 +284,7 @@ namespace Dota_Geek.Modules
                 var url2 = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/heroes";
                 json = client.DownloadString(url2);
                 var obj2 = JsonConvert.DeserializeObject<List<HeroPlayData>>(json);
+                if (!obj2.Any()) return;
 
                 var my =
                     $"```{"Name".PadRight(20, ' ') + "Total".PadRight(10, ' ') + "Wins".PadRight(10, ' ') + "Losses".PadRight(10, ' ') + "Last Played UTC"}\n";
@@ -303,7 +329,8 @@ namespace Dota_Geek.Modules
                     true);
                 embed.AddField("Rating", obj.Rating, true);
                 embed.AddField("Players",
-                    $"`{Config.Bot.PrefixDictionary[Context.Guild.Id]}players team {queryOrTeamId.Replace("`", "\\`")}`", true);
+                    $"`{Config.Bot.PrefixDictionary[Context.Guild.Id]}players team {queryOrTeamId.Replace("`", "\\`")}`",
+                    true);
                 embed.AddField("Matches",
                     $"`{Config.Bot.PrefixDictionary[Context.Guild.Id]}matches team {queryOrTeamId}`", true);
                 await ReplyAsync(string.Empty, embed: embed.Build());
@@ -360,7 +387,7 @@ namespace Dota_Geek.Modules
             using (var client = new WebClient())
             {
                 var json = client.DownloadString(url);
-                var objL = (JsonConvert.DeserializeObject<List<ProTeamMatch>>(json)).Take(15);
+                var objL = JsonConvert.DeserializeObject<List<ProTeamMatch>>(json).Take(15);
                 var my =
                     $"**{team.Name}**\n```{"League Name".PadRight(25) + "Versus".PadRight(20) + "Status".PadRight(8) + "Match ID".PadRight(15)}";
                 my += "\n" + (my.Length - 3 - team.Name.Length).Times('_');
@@ -392,16 +419,15 @@ namespace Dota_Geek.Modules
             using (var client = new WebClient())
             {
                 var json = client.DownloadString(url);
-                var objL = (JsonConvert.DeserializeObject<List<ProTeamPlayers>>(json)).Take(15);
+                var objL = JsonConvert.DeserializeObject<List<ProTeamPlayers>>(json).Take(15);
                 var my =
                     $"**{team.Name}**\n```{"Name".PadRight(20) + "Total Games".PadRight(17) + "Wins".PadRight(12) + "Current Member"}";
                 my += "\n" + (my.Length - 3 - team.Name.Length).Times('_');
 
                 my = objL.OrderBy(x => x.IsCurrentTeamMember == false).Aggregate(my,
-                    (current, obj) => current + ("\n" + obj.Name.PadRight(20) +
-                                                 obj.GamesPlayed.ToString().PadRight(17) +
-                                                 obj.Wins.ToString().PadRight(12) +
-                                                 ((obj.IsCurrentTeamMember ?? false) ? "Yes" : "No")));
+                    (current, obj) => current + "\n" + obj.Name.PadRight(20) + obj.GamesPlayed.ToString().PadRight(17) +
+                                      obj.Wins.ToString().PadRight(12) +
+                                      (obj.IsCurrentTeamMember ?? false ? "Yes" : "No"));
 
                 my += "```";
                 await ReplyAsync(my);

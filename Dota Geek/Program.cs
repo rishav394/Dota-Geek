@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Timers;
 using Discord;
 using Discord.WebSocket;
 using Dota_Geek.Modules;
@@ -16,13 +17,13 @@ namespace Dota_Geek
         private static void Main()
         {
             Global.Interval = 60 * 60 * 1000;
-            var timer = new System.Timers.Timer(Global.Interval) {Enabled = true};
+            var timer = new Timer(Global.Interval) {Enabled = true};
             timer.Elapsed += Timer_Elapsed;
-            
+
             new Program().StartAsync().GetAwaiter().GetResult();
         }
 
-        private static async void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private static async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             foreach (var pair in TrackedAccounts.TrackDictionary)
             {
@@ -36,10 +37,7 @@ namespace Dota_Geek
                     foreach (var data in pair.Value)
                     {
                         var myChannel = Global.Client.GetGuild(data.GuildId).GetChannel(data.ChannelId) as ITextChannel;
-                        if (myChannel is null)
-                        {
-                            continue;
-                        }
+                        if (myChannel is null) continue;
 
                         await myChannel.SendMessageAsync(final);
                     }
@@ -58,7 +56,7 @@ namespace Dota_Geek
             if (string.IsNullOrEmpty(Config.Bot.Token)) return;
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
-                LogLevel = LogSeverity.Verbose,
+                LogLevel = LogSeverity.Verbose
             });
 
             _client.Ready += Ready;

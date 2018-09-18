@@ -10,10 +10,7 @@ namespace Dota_Geek
 
         static LinkedAccounts()
         {
-            if (!Directory.Exists("Resources"))
-            {
-                Directory.CreateDirectory("Resources");
-            }
+            if (!Directory.Exists("Resources")) Directory.CreateDirectory("Resources");
 
             if (File.Exists("Resources/LinkedAccounts.json"))
             {
@@ -32,6 +29,5 @@ namespace Dota_Geek
             var json = JsonConvert.SerializeObject(UserDictionary, Formatting.Indented);
             File.WriteAllText("Resources/LinkedAccounts.json", json);
         }
-
     }
 }

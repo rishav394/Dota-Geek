@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 
@@ -9,7 +7,7 @@ namespace Dota_Geek
 {
     public static class Extensions
     {
-        private static List<ulong> ProUsers { get; set; }
+        private static List<ulong> ProUsers { get; }
 
         static Extensions()
         {
@@ -38,10 +36,7 @@ namespace Dota_Geek
 
         public static bool MakePro(this SocketUser socketUser)
         {
-            if (socketUser.IsPro())
-            {
-                return false;
-            }
+            if (socketUser.IsPro()) return false;
 
             ProUsers.Add(socketUser.Id);
             Save();
@@ -50,10 +45,7 @@ namespace Dota_Geek
 
         public static bool RemovePro(this SocketUser socketUser)
         {
-            if (!socketUser.IsPro())
-            {
-                return false;
-            }
+            if (!socketUser.IsPro()) return false;
 
             ProUsers.Remove(socketUser.Id);
             Save();
