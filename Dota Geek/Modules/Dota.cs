@@ -39,15 +39,16 @@ namespace Dota_Geek.Modules
                 }
 
                 var last = recent.First();
-                var dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(last.StartTime);
+                var completedTime = DateTimeOffset.FromUnixTimeSeconds(last.StartTime)
+                    .Add(TimeSpan.FromSeconds(last.Duration));
                 var myTimeSpan = TimeSpan.FromMilliseconds(Global.Interval);
-                var difference = DateTimeOffset.UtcNow - dateTimeOffset;
+                var difference = DateTimeOffset.UtcNow - completedTime;
 
                 {
                     Console.ForegroundColor = ConsoleColor.DarkBlue;
                     Console.WriteLine($"Querying time dependency for {my.Name}");
                     Console.WriteLine(DateTimeOffset.UtcNow);
-                    Console.WriteLine(dateTimeOffset);
+                    Console.WriteLine(completedTime);
                     Console.WriteLine(difference);
                     Console.WriteLine(myTimeSpan);
                     Console.ResetColor();
@@ -92,7 +93,7 @@ namespace Dota_Geek.Modules
                 if (obj.RankTier != null)
                     embed.AddField("Medal", ((int) (obj.RankTier / 10)).ParseMedal() + " " + obj.RankTier % 10, true);
                 else
-                    throw new ArgumentNullException("Private Profile Probably.");
+                    throw new Exception("Private Profile Probably.");
 
                 var winLose = WinTask(steam32Parse.ToString());
                 var win = winLose.win;
@@ -112,7 +113,13 @@ namespace Dota_Geek.Modules
                 var url3 = $"https://api.opendota.com/api/players/{accountId.Steam32Parse()}/recentMatches";
                 var json3 = client.DownloadString(url3);
                 var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json3);
-                var time = DateTimeOffset.FromUnixTimeSeconds(recent.FirstOrDefault().StartTime);
+
+                if (!recent.Any())
+                {
+                    throw new Exception("Dude never played doto");
+                }
+
+                var time = DateTimeOffset.FromUnixTimeSeconds(recent.First().StartTime);
 
                 embed.AddField("Last Played", time.DateTime + " UTC", true);
 
