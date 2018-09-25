@@ -745,31 +745,31 @@ namespace Dota_Geek.DataTypes.OpenDota
     public class Benchmarks
     {
         [JsonProperty("gold_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> GoldPerMin { get; set; }
+        public Dictionary<string, double?> GoldPerMin { get; set; }
 
         [JsonProperty("xp_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> XpPerMin { get; set; }
+        public Dictionary<string, double?> XpPerMin { get; set; }
 
         [JsonProperty("kills_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> KillsPerMin { get; set; }
+        public Dictionary<string, double?> KillsPerMin { get; set; }
 
         [JsonProperty("last_hits_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> LastHitsPerMin { get; set; }
+        public Dictionary<string, double?> LastHitsPerMin { get; set; }
 
         [JsonProperty("hero_damage_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> HeroDamagePerMin { get; set; }
+        public Dictionary<string, double?> HeroDamagePerMin { get; set; }
 
         [JsonProperty("hero_healing_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> HeroHealingPerMin { get; set; }
+        public Dictionary<string, double?> HeroHealingPerMin { get; set; }
 
         [JsonProperty("tower_damage", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> TowerDamage { get; set; }
+        public Dictionary<string, double?> TowerDamage { get; set; }
 
         [JsonProperty("stuns_per_min", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> StunsPerMin { get; set; }
+        public Dictionary<string, double?> StunsPerMin { get; set; }
 
         [JsonProperty("lhten", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, double> Lhten { get; set; }
+        public Dictionary<string, double?> Lhten { get; set; }
     }
 
     public class BuybackLog

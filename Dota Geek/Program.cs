@@ -28,6 +28,11 @@ namespace Dota_Geek
             foreach (var pair in TrackedAccounts.TrackDictionary)
             {
                 var final = Dota.LastMatch($"[U:1:{pair.Key}]", out var lastHour);
+                if (pair.Value is null)
+                {
+                    continue;
+                }
+
                 if (lastHour)
                 {
                     Console.ForegroundColor = ConsoleColor.Cyan;

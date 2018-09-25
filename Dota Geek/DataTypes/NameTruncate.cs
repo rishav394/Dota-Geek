@@ -5,7 +5,9 @@
         public static string Truncate(this string value, int maxLength)
         {
             if (string.IsNullOrEmpty(value)) return value;
-            return value.Length <= maxLength ? value : value.Substring(0, maxLength - 2) + "..";
+
+            // Fucks up when get a non english alphabet
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength - 4) + "..";
         }
 
         public static string Times(this int times, char value)
