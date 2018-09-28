@@ -16,8 +16,6 @@ namespace Dota_Geek.Modules
     [Name("Dota Stuff")]
     public class Dota : ModuleBase<SocketCommandContext>
     {
-        public static string SteamApiKey { get; } = "902AC23891ED8519FFCDE9D49DC65725";
-
         [Command("last match")]
         public async Task LasTask(string accountId)
         {

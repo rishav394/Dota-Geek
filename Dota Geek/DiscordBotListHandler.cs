@@ -1,18 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Discord.WebSocket;
 using DiscordBotsList.Api;
 
 namespace Dota_Geek
 {
-    internal class DiscordBotListHandler
+    public class DiscordBotListHandler
     {
-        public DiscordBotListHandler(ulong botDiscordId, string botToken)
+        private readonly AuthDiscordBotListApi _authDiscordBotListApi;
+        private readonly DiscordSocketClient _client;
+        
+        public DiscordBotListHandler(ulong botId, string botDblToken, DiscordSocketClient client)
         {
-            Global.DiscordBotListHandler = new AuthDiscordBotListApi(botDiscordId, botToken);
+            _authDiscordBotListApi = new AuthDiscordBotListApi(botId, botDblToken);
+            _client = client;
         }
 
         public async Task UpdateAsync()
         {
-            await Global.MeBot.Result.UpdateStatsAsync(Global.Client.Guilds.Count);
+            await _authDiscordBotListApi.GetMeAsync().Result
+                .UpdateStatsAsync(_client.Guilds.Count * _client.Guilds.Count);
         }
     }
 }

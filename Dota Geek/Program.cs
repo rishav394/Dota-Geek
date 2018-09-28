@@ -9,10 +9,8 @@ namespace Dota_Geek
 {
     internal class Program
     {
-        private DiscordSocketClient _client;
+        private static DiscordSocketClient _client;
         private CommandHandler _handler;
-        private DiscordBotListHandler _discordBotListHandler;
-
 
         private static void Main()
         {
@@ -53,7 +51,7 @@ namespace Dota_Geek
                         foreach (var data in pair.Value)
                         {
                             var myChannel =
-                                Global.Client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) as ITextChannel;
+                                _client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) as ITextChannel;
                             if (myChannel is null) continue;
 
                             await myChannel.SendMessageAsync(final);
@@ -78,34 +76,20 @@ namespace Dota_Geek
         private async Task StartAsync()
         {
             if (string.IsNullOrEmpty(Config.Bot.Token)) return;
+
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose
             });
-
-            _client.Ready += Ready;
-            _client.Log += Log;
+            
+            _handler = new CommandHandler(_client); // Add LavaLinkManager
+            await _handler.InitializeAsync();
 
             await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
             await _client.StartAsync();
             await _client.SetGameAsync("Dota 2", null, ActivityType.Watching);
 
-            _handler = new CommandHandler();
-            await _handler.InitializeAsync(_client);
             await Task.Delay(-1);
-        }
-
-        private async Task Ready()
-        {
-            Global.Client = _client;
-            _discordBotListHandler = new DiscordBotListHandler(485759803155546113, Config.Bot.DblToken);
-            await _discordBotListHandler.UpdateAsync();
-        }
-
-        private static Task Log(LogMessage arg)
-        {
-            Console.WriteLine(arg);
-            return Task.CompletedTask;
         }
     }
 }
