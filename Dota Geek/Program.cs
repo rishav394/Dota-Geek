@@ -16,43 +16,62 @@ namespace Dota_Geek
 
         private static void Main()
         {
-            Global.Interval = 60 * 60 * 1000;
-            var timer = new Timer(Global.Interval) {Enabled = true};
-            timer.Elapsed += Timer_Elapsed;
+            try
+            {
+                Global.Interval = 60 * 60 * 1000;
+                var timer = new Timer(Global.Interval) {Enabled = true};
+                timer.Elapsed += Timer_Elapsed;
 
-            new Program().StartAsync().GetAwaiter().GetResult();
+                new Program().StartAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception exception)
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(exception);
+                Console.ResetColor();
+            }
         }
 
         private static async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach (var pair in TrackedAccounts.TrackDictionary)
+            try
             {
-                var final = Dota.LastMatch($"[U:1:{pair.Key}]", out var lastHour);
-                if (pair.Value is null)
+                foreach (var pair in TrackedAccounts.TrackDictionary)
                 {
-                    continue;
-                }
-
-                if (lastHour)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("POST " + final.Split('\n')[0]);
-                    Console.ResetColor();
-
-                    foreach (var data in pair.Value)
+                    var final = Dota.LastMatch($"[U:1:{pair.Key}]", out var lastHour);
+                    if (pair.Value is null)
                     {
-                        var myChannel = Global.Client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) as ITextChannel;
-                        if (myChannel is null) continue;
+                        continue;
+                    }
 
-                        await myChannel.SendMessageAsync(final);
+                    if (lastHour)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("POST " + final.Split('\n')[0]);
+                        Console.ResetColor();
+
+                        foreach (var data in pair.Value)
+                        {
+                            var myChannel =
+                                Global.Client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) as ITextChannel;
+                            if (myChannel is null) continue;
+
+                            await myChannel.SendMessageAsync(final);
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("SKIP " + final.Split('\n')[0]);
+                        Console.ResetColor();
                     }
                 }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine("SKIP " + final.Split('\n')[0]);
-                    Console.ResetColor();
-                }
+            }
+            catch (Exception exception)
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(exception);
+                Console.ResetColor();
             }
         }
 
