@@ -41,7 +41,7 @@ namespace Dota_Geek
 
                     foreach (var data in pair.Value)
                     {
-                        var myChannel = Global.Client.GetGuild(data.GuildId).GetChannel(data.ChannelId) as ITextChannel;
+                        var myChannel = Global.Client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) as ITextChannel;
                         if (myChannel is null) continue;
 
                         await myChannel.SendMessageAsync(final);
