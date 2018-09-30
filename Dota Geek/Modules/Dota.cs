@@ -161,6 +161,7 @@ namespace Dota_Geek.Modules
                      "Assist".PadRight(7) +
                      "XPM".PadRight(6) +
                      "GPM".PadRight(6) + "\n";
+
                 for (var i = 0; i < 73; i++)
                     my += "_";
                 my += "\n";

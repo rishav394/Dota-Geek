@@ -14,6 +14,7 @@ namespace Dota_Geek
 
         private static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             try
             {
                 Global.Interval = 60 * 60 * 1000;
@@ -28,6 +29,15 @@ namespace Dota_Geek
                 Console.WriteLine(exception);
                 Console.ResetColor();
             }
+        }
+
+        private static async void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(e.ToString());
+            Console.ResetColor();
+            if (_client.GetGuild(480857253092524032).GetChannel(495978647635623937) is ITextChannel important)
+                await important.SendMessageAsync(e.ToString());
         }
 
         private static async void Timer_Elapsed(object sender, ElapsedEventArgs e)

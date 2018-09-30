@@ -1283,7 +1283,8 @@ namespace Dota_Geek.DataTypes.OpenDota
                     return ObjectiveType.BuildingKill;
             }
 
-            throw new Exception("Cannot unmarshal type ObjectiveType");
+            // do not throw new Exception("Cannot unmarshal type ObjectiveType");
+            return ObjectiveType.BuildingKill;
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
