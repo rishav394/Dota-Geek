@@ -88,37 +88,39 @@ namespace Dota_Geek
             {
                 try
                 {
-                    var typing = context.Channel.EnterTypingState();
-                    var result = await _command.ExecuteAsync(context, argPos, _services);
-                    typing.Dispose();
-                    if (!result.IsSuccess)
+                    using (context.Channel.EnterTypingState())
                     {
-                        Console.WriteLine(result.ErrorReason + $" at {context.Guild.Name}");
-                        switch (result.Error)
+                        var result = await _command.ExecuteAsync(context, argPos, _services);
+                        if (!result.IsSuccess)
                         {
-                            case CommandError.UnknownCommand:
+                            Console.WriteLine(result.ErrorReason + $" at {context.Guild.Name}");
+                            switch (result.Error)
                             {
-                                var guildEmote = Emote.Parse("<:unknowscmd:461157571701506049>");
-                                await msg.AddReactionAsync(guildEmote);
-                                break;
-                            }
-                            case CommandError.BadArgCount:
-                            {
-                                await context.Channel.SendMessageAsync($"You are suppose to pass in a parameter with" +
-                                                                       $" this command. type `help` for help");
-                                break;
-                            }
-                            case CommandError.UnmetPrecondition:
-                            {
-                                await context.Channel.SendMessageAsync(
-                                    $"You don have enough permissions to use this command" +
-                                    result.ErrorReason);
-                                break;
-                            }
-                            default:
-                            {
-                                await context.Channel.SendMessageAsync(result.Error.ToString());
-                                break;
+                                case CommandError.UnknownCommand:
+                                {
+                                    var guildEmote = Emote.Parse("<:unknowscmd:461157571701506049>");
+                                    await msg.AddReactionAsync(guildEmote);
+                                    break;
+                                }
+                                case CommandError.BadArgCount:
+                                {
+                                    await context.Channel.SendMessageAsync(
+                                        "You are suppose to pass in a parameter with this" +
+                                        " command. type `help [command name]` for help");
+                                    break;
+                                }
+                                case CommandError.UnmetPrecondition:
+                                {
+                                    await context.Channel.SendMessageAsync(
+                                        "You don have enough permissions to use this command" +
+                                        result.ErrorReason);
+                                    break;
+                                }
+                                default:
+                                {
+                                    await context.Channel.SendMessageAsync(result.Error.ToString());
+                                    break;
+                                }
                             }
                         }
                     }

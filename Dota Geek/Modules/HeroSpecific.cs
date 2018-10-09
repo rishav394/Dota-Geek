@@ -13,6 +13,7 @@ namespace Dota_Geek.Modules
     {
         [Command("talent")]
         [Alias("talents")]
+        [Summary("Give a hero's Talent Tree")]
         public async Task HeroTalentTask([Summary("Hero name first few letters")] [Remainder] string hero)
         {
             var data = File.ReadAllText("DataTypes\\Talents.txt");

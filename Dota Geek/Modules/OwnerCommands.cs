@@ -9,7 +9,8 @@ namespace Dota_Geek.Modules
     [RequireOwner]
     public class OwnerCommands : ModuleBase<SocketCommandContext>
     {
-        [Command("give database")]
+        [Command("Give database")]
+        [Summary("Very bad command. Dont ever use.")]
         public async Task GiveDatabaseTask()
         {
             var msg = await ReplyAsync("<a:loader:461159122575032331> Loading Database");
@@ -20,6 +21,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Make pro")]
+        [Summary("Make someone pro user. Requires mention.")]
         public async Task ProTask(SocketUser socketUser)
         {
             var result = socketUser.MakePro();
@@ -30,6 +32,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Remove pro")]
+        [Summary("Revoke pro membership from someone. Requires mention.")]
         public async Task RemoveProTask(SocketUser socketUser)
         {
             var result = socketUser.RemovePro();

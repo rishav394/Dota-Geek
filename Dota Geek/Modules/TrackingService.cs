@@ -10,6 +10,7 @@ namespace Dota_Geek.Modules
     public class TrackingService : ModuleBase<SocketCommandContext>
     {
         [Command("Untrack")]
+        [Summary("Stop Tracking a steamID's games")]
         public async Task UnTrackTask(string steamId)
         {
             var steam = steamId.Parser();
@@ -35,6 +36,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("track")]
+        [Summary("Start tracking a steamID")]
         public async Task TrackTask(string steamId)
         {
             var steam = steamId.Parser();

@@ -6,24 +6,15 @@ using Discord.Commands;
 
 namespace Dota_Geek.Modules
 {
-    /// <summary>Class containing code for help module</summary>
-    /// >
     public class Help : ModuleBase
     {
-        /// <summary>Gets the command service</summary>
-        /// >
         private readonly CommandService _commands;
 
-        /// <summary>Initializes a new instance of the <see cref="Help" /> class.</summary>
-        /// <param name="service">The service. </param>
         public Help(CommandService service)
         {
             _commands = service;
         }
 
-        /// <summary>Lists the commands.</summary>
-        /// <returns>returns nothing</returns>
-        /// <param name="commandOrModule">Optional Module or command</param>
         [Command("help", RunMode = RunMode.Async)]
         [Summary("Lists all the commands")]
         public async Task HelpAsync([Remainder] string commandOrModule = null)
@@ -85,21 +76,6 @@ namespace Dota_Geek.Modules
             }.Build());
         }
 
-        /// <summary> The rateLimits task </summary>
-        /// <returns> The <see cref="Task" /> </returns>
-        [Command("rateLimits")]
-        [Summary("Shows the rate limits for different actions")]
-        public async Task RateLimitsTask()
-        {
-            const string message =
-                "```prolog\nREST:\n        POST Message |  5/5s    | per-channel\n      DELETE Message |  5/1s    | per-channel\n PUT/DELETE Reaction |"
-                + "  1/0.25s | per-channel\n        PATCH Member |  10/10s  | per-guild\n   PATCH Member Nick |  1/1s    | per-guild\n      PATCH Username |"
-                + "  2/3600s | per-account\n      |All Requests| |  50/1s   | per-account\nWS:\n     Gateway Connect |   1/5s   | per-account\n     Presence Update |"
-                + "   5/60s  | per-session\n |All Sent Messages| | 120/60s  | per-session```";
-
-            await Context.Channel.SendMessageAsync(message);
-        }
-
         /// <summary> Gets more help on a command  </summary>
         /// <param name="command"> The command </param>
         /// <returns> The <see cref="Task" /> </returns>
@@ -140,7 +116,9 @@ namespace Dota_Geek.Modules
                             temp += " " + string.Join(
                                         " ",
                                         cmd.Parameters.Select(
-                                            p => p.IsOptional ? "<" + p.Name + ">" : "[" + p.Name + "]"));
+                                            p => p.IsOptional
+                                                ? "<" + (p.Summary.Length > 1 ? p.Summary : p.Name) + ">"
+                                                : "[" + (p.Summary.Length > 1 ? p.Summary : p.Name) + "]"));
 
                         temp += "`";
                         x.Value += $"\n**Usage**: {temp}\n**Summary**: {cmd.Summary}";

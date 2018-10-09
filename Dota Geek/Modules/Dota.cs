@@ -17,6 +17,7 @@ namespace Dota_Geek.Modules
     public class Dota : ModuleBase<SocketCommandContext>
     {
         [Command("last match")]
+        [Summary("Gets the last match data for a steamID")]
         public async Task LasTask(string accountId = null)
         {
             if (accountId is null)
@@ -336,7 +337,8 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Team", RunMode = RunMode.Async)]
-        public async Task TeamSearchTask([Remainder] string queryOrTeamId)
+        [Summary("Gets a small profile for a pro Team")]
+        public async Task TeamSearchTask([Summary("Team Name or Team ID")] [Remainder] string queryOrTeamId)
         {
             var obj = TeamSearch(queryOrTeamId);
             if (obj != null)
@@ -400,7 +402,8 @@ namespace Dota_Geek.Modules
         }
 
         [Command("matches team", RunMode = RunMode.Async)]
-        public async Task ProTeamMatches([Remainder] string queryOrTeamId)
+        [Summary("Gets the matches played by a pro team")]
+        public async Task ProTeamMatches([Summary("Team Name or Team ID")] [Remainder] string queryOrTeamId)
         {
             var team = TeamSearch(queryOrTeamId);
             if (team is null)
@@ -432,7 +435,8 @@ namespace Dota_Geek.Modules
         }
 
         [Command("players team", RunMode = RunMode.Async)]
-        public async Task ProTeamPlayers([Remainder] string queryOrTeamId)
+        [Summary("Get the players of a pro team")]
+        public async Task ProTeamPlayers([Summary("Team Name or Team ID")] [Remainder] string queryOrTeamId)
         {
             var team = TeamSearch(queryOrTeamId);
             if (team is null)
