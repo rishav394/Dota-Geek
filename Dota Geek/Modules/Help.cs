@@ -52,7 +52,8 @@ namespace Dota_Geek.Modules
                 foreach (var cmd in module.Commands.OrderBy(x => x.Name))
                 {
                     // Just a basic report stuff to log missed summaries
-                    if (string.IsNullOrWhiteSpace(cmd.Summary)) Console.WriteLine("No summary for " + cmd.Name);
+                    if (string.IsNullOrWhiteSpace(cmd.Summary)) 
+                        Console.WriteLine("No summary for " + cmd.Name);
 
                     // TODO: Boy I need a better way to stop the precondition check for these modules
                     if (!module.Name.ToLower().Equals("help") && !module.Name.ToLower().Equals("ping"))

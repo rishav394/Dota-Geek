@@ -17,8 +17,22 @@ namespace Dota_Geek.Modules
     public class Dota : ModuleBase<SocketCommandContext>
     {
         [Command("last match")]
-        public async Task LasTask(string accountId)
+        public async Task LasTask(string accountId = null)
         {
+            if (accountId is null)
+            {
+                if (LinkedAccounts.UserDictionary.TryGetValue(Context.User.Id, out var longSteamId))
+                {
+                    accountId = $"[U:1:{longSteamId}]";
+                }
+                else
+                {
+                    await ReplyAsync(
+                        "Uhh I don't know you. Either tell me who you are by `I am [your steam profile]` or provide a steamID with this command.");
+                    throw new ArgumentNullException(nameof(accountId));
+                }
+            }
+
             await ReplyAsync(LastMatch(accountId, out _));
         }
 
@@ -45,7 +59,7 @@ namespace Dota_Geek.Modules
                 var myTimeSpan = TimeSpan.FromMilliseconds(Global.Interval);
                 var difference = timeNow - completedTime;
                 lastHour = difference < myTimeSpan;
-
+                /*
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"\n\nQuerying time dependency for {my.Name}");
@@ -56,6 +70,7 @@ namespace Dota_Geek.Modules
                     Console.WriteLine(lastHour + "\n\n");
                     Console.ResetColor();
                 }
+                */
 
                 var final = $"**Match Data for {my.Name}**\n" + MatchDataGiver(last.MatchId);
                 return final;
@@ -369,13 +384,13 @@ namespace Dota_Geek.Modules
                     var final = obj2.Where(x => x.Tag.ToLower().Contains(queryOrTeamId)).ToList();
                     if (final.Any())
                     {
-                        Console.WriteLine($"{queryOrTeamId} has {final.Count} tag responses");
+                        //// Console.WriteLine($"{queryOrTeamId} has {final.Count} tag responses");
                         obj = final.First();
                     }
                     else
                     {
                         var p = obj2.Where(x => x.Name.ToLower().Contains(queryOrTeamId.ToLower())).ToList();
-                        Console.WriteLine($"{queryOrTeamId} has {p.Count} responses");
+                        //// Console.WriteLine($"{queryOrTeamId} has {p.Count} responses");
                         obj = p.FirstOrDefault();
                     }
                 }

@@ -85,6 +85,7 @@ namespace Dota_Geek
 
             if (msg.HasStringPrefix(Config.Bot.PrefixDictionary[context.Guild.Id], ref argPos) ||
                 msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            {
                 try
                 {
                     var typing = context.Channel.EnterTypingState();
@@ -93,14 +94,32 @@ namespace Dota_Geek
                     if (!result.IsSuccess)
                     {
                         Console.WriteLine(result.ErrorReason + $" at {context.Guild.Name}");
-                        if (result.Error == CommandError.UnknownCommand)
+                        switch (result.Error)
                         {
-                            var guildEmote = Emote.Parse("<:unknowscmd:461157571701506049>");
-                            await msg.AddReactionAsync(guildEmote);
-                        }
-                        else
-                        {
-                            await context.Channel.SendMessageAsync(result.Error.ToString());
+                            case CommandError.UnknownCommand:
+                            {
+                                var guildEmote = Emote.Parse("<:unknowscmd:461157571701506049>");
+                                await msg.AddReactionAsync(guildEmote);
+                                break;
+                            }
+                            case CommandError.BadArgCount:
+                            {
+                                await context.Channel.SendMessageAsync($"You are suppose to pass in a parameter with" +
+                                                                       $" this command. type `help` for help");
+                                break;
+                            }
+                            case CommandError.UnmetPrecondition:
+                            {
+                                await context.Channel.SendMessageAsync(
+                                    $"You don have enough permissions to use this command" +
+                                    result.ErrorReason);
+                                break;
+                            }
+                            default:
+                            {
+                                await context.Channel.SendMessageAsync(result.Error.ToString());
+                                break;
+                            }
                         }
                     }
                 }
@@ -110,6 +129,7 @@ namespace Dota_Geek
                     Console.WriteLine(e.Message);
                     Console.ResetColor();
                 }
+            }
         }
     }
 }

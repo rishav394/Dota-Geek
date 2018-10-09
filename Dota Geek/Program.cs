@@ -15,20 +15,12 @@ namespace Dota_Geek
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            try
-            {
-                Global.Interval = 60 * 60 * 1000;
-                var timer = new Timer(Global.Interval) {Enabled = true};
-                timer.Elapsed += Timer_Elapsed;
 
-                new Program().StartAsync().GetAwaiter().GetResult();
-            }
-            catch (Exception exception)
-            {
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine(exception);
-                Console.ResetColor();
-            }
+            Global.Interval = 60 * 60 * 1000;
+            var timer = new Timer(Global.Interval) {Enabled = true};
+            timer.Elapsed += Timer_Elapsed;
+
+            new Program().StartAsync().GetAwaiter().GetResult();
         }
 
         private static async void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -54,10 +46,6 @@ namespace Dota_Geek
 
                     if (lastHour)
                     {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("POST " + final.Split('\n')[0]);
-                        Console.ResetColor();
-
                         foreach (var data in pair.Value)
                         {
                             var myChannel =
@@ -69,9 +57,11 @@ namespace Dota_Geek
                     }
                     else
                     {
+                        /*
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("SKIP " + final.Split('\n')[0]);
                         Console.ResetColor();
+                        */
                     }
                 }
             }

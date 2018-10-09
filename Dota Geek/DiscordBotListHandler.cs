@@ -18,7 +18,7 @@ namespace Dota_Geek
         public async Task UpdateAsync()
         {
             await _authDiscordBotListApi.GetMeAsync().Result
-                .UpdateStatsAsync(_client.Guilds.Count * _client.Guilds.Count);
+                .UpdateStatsAsync(_client.Guilds.Count * 3);
         }
     }
 }
