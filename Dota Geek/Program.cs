@@ -12,6 +12,7 @@ namespace Dota_Geek
         private static DiscordSocketClient _client;
         private CommandHandler _handler;
 
+
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -81,10 +82,10 @@ namespace Dota_Geek
             {
                 LogLevel = LogSeverity.Verbose
             });
-            
+
             _handler = new CommandHandler(_client); // Add LavaLinkManager
             await _handler.InitializeAsync();
-
+            
             await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
             await _client.StartAsync();
             await _client.SetGameAsync("Dota 2", null, ActivityType.Watching);

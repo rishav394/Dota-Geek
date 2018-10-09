@@ -1,12 +1,24 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
 using Discord.Commands;
 using Discord.WebSocket;
 
 namespace Dota_Geek.Modules
 {
     [RequireOwner]
-    public class ProMember : ModuleBase<SocketCommandContext>
+    public class OwnerCommands : ModuleBase<SocketCommandContext>
     {
+        [Command("give database")]
+        public async Task GiveDatabaseTask()
+        {
+            var msg = await ReplyAsync("<a:loader:461159122575032331> Loading Database");
+            ZipFile.CreateFromDirectory(@"Resources", @"Resources.zip", CompressionLevel.Optimal, true);
+            await Context.Channel.SendFileAsync("Resources.zip");
+            File.Delete("Resources.zip");
+            await msg.DeleteAsync();
+        }
+
         [Command("Make pro")]
         public async Task ProTask(SocketUser socketUser)
         {
