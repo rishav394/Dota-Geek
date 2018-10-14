@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Discord;
@@ -107,6 +108,22 @@ namespace Dota_Geek
                             Console.WriteLine($"Could not send to {clientGuild.Name}.");
                         }
                     }
+                }
+                else if (input.ToLower() == "dm")
+                {
+                    for (var i = 0; i < _client.Guilds.Count; i++)
+                    {
+                        Console.WriteLine(i + 1 + _client.Guilds.ElementAt(i).Name);
+                    }
+
+                    var to = int.Parse(Console.ReadLine());
+                    var guild = _client.Guilds.ElementAt(to - 1);
+                    Console.WriteLine($"{guild.Name}'s channel ID please: ");
+                    var id = ulong.Parse(Console.ReadLine());
+                    var chanel = guild.GetTextChannel(id);
+                    Console.WriteLine("What do u want to send");
+                    var text = Console.ReadLine();
+                    await chanel.SendMessageAsync(text);
                 }
                 
                 await Task.CompletedTask;

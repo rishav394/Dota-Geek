@@ -28,7 +28,6 @@ namespace Dota_Geek.Modules
             var builder = new EmbedBuilder();
             {
                 builder.WithColor(new Color(87, 222, 127));
-                builder.WithTimestamp(DateTimeOffset.UtcNow.UtcDateTime);
                 builder.WithTitle($"Hey {Context.User.Username}, here is a list of all my commands.");
                 builder.WithFooter(
                     f => f.WithText("Use `help [command-name]` or `help [module-name]` for more information"));
@@ -50,7 +49,7 @@ namespace Dota_Geek.Modules
                     if (!module.Name.ToLower().Equals("help") && !module.Name.ToLower().Equals("ping"))
                     {
                         var result = await cmd.CheckPreconditionsAsync(Context);
-                        if (result.IsSuccess) fieldValue += $"{cmd.Aliases.First()}, ";
+                        if (result.IsSuccess) fieldValue += $"`{cmd.Aliases.First()}`, ";
                     }
                 }
 
@@ -62,7 +61,7 @@ namespace Dota_Geek.Modules
                 builder.AddField(
                     x =>
                     {
-                        x.Name = $"\n💠 {module.Name}";
+                        x.Name = $"\n<:es:501101954441674752> {module.Name}";
                         x.Value = $"{fieldValue}";
                         x.IsInline = false;
                     });
