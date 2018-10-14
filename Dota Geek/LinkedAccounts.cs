@@ -6,7 +6,7 @@ namespace Dota_Geek
 {
     internal static class LinkedAccounts
     {
-        public static Dictionary<ulong, long> UserDictionary { get; set; }
+        public static Dictionary<ulong, long> UserDictionary { get; private set; }
 
         static LinkedAccounts()
         {

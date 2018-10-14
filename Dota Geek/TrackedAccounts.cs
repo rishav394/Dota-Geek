@@ -8,7 +8,7 @@ namespace Dota_Geek
     public static class TrackedAccounts
     {
         // <Steam32 : List< GuildID and ChannelID >>
-        public static Dictionary<long, List<SendData>> TrackDictionary { get; set; }
+        public static Dictionary<long, List<SendData>> TrackDictionary { get; private set; }
 
         static TrackedAccounts()
         {

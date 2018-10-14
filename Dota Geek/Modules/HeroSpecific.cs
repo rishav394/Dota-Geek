@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -52,7 +51,7 @@ namespace Dota_Geek.Modules
             }
 
             my += "```";
-            Console.WriteLine(my);
+            //Console.WriteLine(my);
             await ReplyAsync(my);
         }
     }

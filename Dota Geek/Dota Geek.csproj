@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.0.0-beta2-00991" />
-    <PackageReference Include="DiscordBotsList.Api" Version="1.1.0" />
+    <PackageReference Include="Discord.Addons.Interactive" Version="1.0.1" />
+    <PackageReference Include="Discord.Net" Version="2.0.0-beta2-01001" />
+    <PackageReference Include="DiscordBotsList.Api" Version="1.3.0" />
+    <PackageReference Include="SharpLink" Version="1.0.0-beta-0005" />
   </ItemGroup>
 
   <ItemGroup>

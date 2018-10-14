@@ -7,7 +7,7 @@ namespace Dota_Geek
     public static class UserGuildRelation
     {
         // < UserID : Dictionary < GuildID : List < SteamID > > >
-        public static Dictionary<ulong, Dictionary<ulong, List<long>>> UserGuildRelationDictionary { get; set; }
+        public static Dictionary<ulong, Dictionary<ulong, List<long>>> UserGuildRelationDictionary { get; private set; }
 
         static UserGuildRelation()
         {
