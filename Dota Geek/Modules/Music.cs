@@ -21,6 +21,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("seek")]
+        [Summary("Seeks to a particular position in the song (in sec)")]
         public async Task SeekTask(int position)
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
@@ -41,6 +42,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("volume", RunMode = RunMode.Async)]
+        [Summary("Sets the volume for the current playing song 0-150")]
         public async Task VolumeTask(uint value = 98450)
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
@@ -52,6 +54,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("pause", RunMode = RunMode.Async)]
+        [Summary("Pauses the song")]
         public async Task PauseTask()
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
@@ -62,6 +65,7 @@ namespace Dota_Geek.Modules
 
         [Command("resume", RunMode = RunMode.Async)]
         [Alias("Unpause")]
+        [Summary("Resumes the song")]
         public async Task ResumeTask()
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
@@ -78,6 +82,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Now playing", RunMode = RunMode.Async)]
+        [Summary("Get the current playing song")]
         public async Task NowPlayingTask()
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
@@ -95,6 +100,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("clear")]
+        [Summary("Clears the queue")]
         public async Task ClearTask()
         {
             Context.Guild.Id.PopAll();
@@ -102,6 +108,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("stop", RunMode = RunMode.Async)]
+        [Summary("Stops the current playing song.")]
         public async Task StopTask()
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
@@ -119,6 +126,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Queue", RunMode = RunMode.Async)]
+        [Summary("Prints the current queue")]
         public async Task QueueTask()
         {
             var my = string.Empty;
@@ -153,6 +161,7 @@ namespace Dota_Geek.Modules
         }
 
         [Command("skip", RunMode = RunMode.Async)]
+        [Summary("Skips the current playing song. Broken AF.")]
         public async Task SkipTask()
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??

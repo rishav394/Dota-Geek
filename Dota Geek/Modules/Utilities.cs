@@ -51,21 +51,21 @@ namespace Dota_Geek.Modules
         }
 
         [Command("Support")]
-        [Summary("Returns the current estimated round-trip latency over WebSocket and REST")]
+        [Summary("Provides important links that can come in handly")]
         public async Task SupportTask()
         {
             await Invite();
         }
 
         [Command("Vote")]
-        [Summary("Returns the current estimated round-trip latency over WebSocket and REST")]
+        [Summary("Provides important links that can come in handly")]
         public async Task VoteTask()
         {
             await Invite();
         }
 
         [Command("Invite")]
-        [Summary("Returns the current estimated round-trip latency over WebSocket and REST")]
+        [Summary("Provides important links that can come in handly")]
         public async Task InviteTask()
         {
             await Invite();
