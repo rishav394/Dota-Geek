@@ -34,7 +34,7 @@ namespace Dota_Geek.DataTypes.OpenDota
 
         [JsonProperty("gold_per_min")] public long GoldPerMin { get; set; }
 
-        [JsonProperty("hero_damage")] public long HeroDamage { get; set; }
+        [JsonProperty("hero_damage")] public long? HeroDamage { get; set; }
 
         [JsonProperty("tower_damage")] public long TowerDamage { get; set; }
 

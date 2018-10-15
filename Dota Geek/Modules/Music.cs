@@ -33,11 +33,11 @@ namespace Dota_Geek.Modules
             if (player.CurrentTrack.IsSeekable)
             {
                 await player.SeekAsync(position * 1000);
-                await ReplyAsync($"<:check:462378657114226695>");
+                await ReplyAsync("<:check:462378657114226695>");
             }
             else
             {
-                await ReplyAndDeleteAsync($"<:uncheck:462379632004562965> Cant seek this track.");
+                await ReplyAndDeleteAsync("<:uncheck:462379632004562965> Cant seek this track.");
             }
         }
 
@@ -187,14 +187,11 @@ namespace Dota_Geek.Modules
             }
             catch (Exception)
             {
-                if (player.Playing)
-                {
-                    await player.StopAsync();
-                }
+                if (player.Playing) await player.StopAsync();
 
                 await final.ModifyAsync(x => x.Content = "Queue Empty");
             }
-            
+
             var build = new EmbedBuilder
             {
                 Title = "Warning",
@@ -233,8 +230,8 @@ namespace Dota_Geek.Modules
                         Footer = new EmbedFooterBuilder
                         {
                             Text =
-                                $"To go specific youtube search try adding `ytsearch:`before your search string." +
-                                $" Eg: play ytsearch:Allen Walker"
+                                "To go specific youtube search try adding `ytsearch:`before your search string." +
+                                " Eg: play ytsearch:Allen Walker"
                         }
                     }.Build();
                 });
@@ -255,8 +252,8 @@ namespace Dota_Geek.Modules
                         Footer = new EmbedFooterBuilder
                         {
                             Text =
-                                $"To go specific soundcloud search try adding `scsearch:`before your search string." +
-                                $" Eg: play scsearch:Allen Walker"
+                                "To go specific soundcloud search try adding `scsearch:`before your search string." +
+                                " Eg: play scsearch:Allen Walker"
                         }
                     }.Build();
                 });

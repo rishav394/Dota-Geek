@@ -53,7 +53,7 @@ namespace Dota_Geek.Modules
 
                 var last = recent.First();
                 var timeNow =
-                    DateTimeOffset.FromUnixTimeSeconds((Int32) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)))
+                    DateTimeOffset.FromUnixTimeSeconds((int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))
                         .TotalSeconds);
                 var completedTime = DateTimeOffset.FromUnixTimeSeconds(last.StartTime)
                     .Add(TimeSpan.FromSeconds(last.Duration));
@@ -132,10 +132,7 @@ namespace Dota_Geek.Modules
                 var json3 = client.DownloadString(url3);
                 var recent = JsonConvert.DeserializeObject<List<RecentMatches>>(json3);
 
-                if (!recent.Any())
-                {
-                    throw new Exception("Dude never played doto");
-                }
+                if (!recent.Any()) throw new Exception("Dude never played doto");
 
                 var time = DateTimeOffset.FromUnixTimeSeconds(recent.First().StartTime);
 
@@ -338,7 +335,8 @@ namespace Dota_Geek.Modules
 
         [Command("Team", RunMode = RunMode.Async)]
         [Summary("Gets a small profile for a pro Team")]
-        public async Task TeamSearchTask([Summary("Team Name or Team ID")] [Remainder] string queryOrTeamId)
+        public async Task TeamSearchTask([Summary("Team Name or Team ID")] [Remainder]
+            string queryOrTeamId)
         {
             var obj = TeamSearch(queryOrTeamId);
             if (obj != null)
@@ -403,7 +401,8 @@ namespace Dota_Geek.Modules
 
         [Command("matches team", RunMode = RunMode.Async)]
         [Summary("Gets the matches played by a pro team")]
-        public async Task ProTeamMatches([Summary("Team Name or Team ID")] [Remainder] string queryOrTeamId)
+        public async Task ProTeamMatches([Summary("Team Name or Team ID")] [Remainder]
+            string queryOrTeamId)
         {
             var team = TeamSearch(queryOrTeamId);
             if (team is null)
@@ -436,7 +435,8 @@ namespace Dota_Geek.Modules
 
         [Command("players team", RunMode = RunMode.Async)]
         [Summary("Get the players of a pro team")]
-        public async Task ProTeamPlayers([Summary("Team Name or Team ID")] [Remainder] string queryOrTeamId)
+        public async Task ProTeamPlayers([Summary("Team Name or Team ID")] [Remainder]
+            string queryOrTeamId)
         {
             var team = TeamSearch(queryOrTeamId);
             if (team is null)

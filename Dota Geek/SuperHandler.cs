@@ -149,9 +149,10 @@ namespace Dota_Geek
             if (msg.HasStringPrefix(Config.Bot.PrefixDictionary[context.Guild.Id], ref argPos) ||
                 msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                try
+                using (context.Channel.EnterTypingState())
                 {
-                    using (context.Channel.EnterTypingState())
+
+                    try
                     {
                         var result = await _command.ExecuteAsync(context, argPos, _services);
                         if (!result.IsSuccess)
@@ -186,13 +187,14 @@ namespace Dota_Geek
                                 }
                             }
                         }
+
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(e.Message);
-                    Console.ResetColor();
+                    catch (Exception e)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(e.Message);
+                        Console.ResetColor();
+                    }
                 }
             }
             #endregion
