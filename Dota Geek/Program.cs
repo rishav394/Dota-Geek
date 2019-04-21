@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+
 using Discord;
 using Discord.WebSocket;
 using Dota_Geek.Modules;
@@ -48,7 +49,8 @@ namespace Dota_Geek
 
                     foreach (var data in pair.Value)
                     {
-                        if (!(_client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) is ITextChannel myChannel)) continue;
+                        if (!(_client.GetGuild(data.GuildId)?.GetChannel(data.ChannelId) is ITextChannel myChannel))
+                            continue;
 
                         await myChannel.SendMessageAsync(final);
                     }
@@ -64,7 +66,13 @@ namespace Dota_Geek
 
         private async Task StartAsync()
         {
-            if (string.IsNullOrEmpty(Config.Bot.Token)) return;
+            var botToken = Config.Bot.Token;
+
+            if (string.IsNullOrEmpty(botToken))
+            {
+                Console.WriteLine("No Token detected.");
+                return;
+            }
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -73,8 +81,8 @@ namespace Dota_Geek
 
             _handler = new SuperHandler(_client);
             await _handler.InitializeAsync();
-            
-            await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
+
+            await _client.LoginAsync(TokenType.Bot, botToken);
             await _client.StartAsync();
             await _client.SetGameAsync("Dota 2", null, ActivityType.Watching);
             await ConsoleRead();
@@ -125,9 +133,10 @@ namespace Dota_Geek
                     var text = Console.ReadLine();
                     await chanel.SendMessageAsync(text);
                 }
-                
+
                 await Task.CompletedTask;
             }
+
             // ReSharper disable once FunctionNeverReturns
         }
     }

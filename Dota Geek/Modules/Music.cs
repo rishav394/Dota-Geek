@@ -47,7 +47,7 @@ namespace Dota_Geek.Modules
         {
             var player = _lavalinkManager.GetPlayer(Context.Guild.Id) ??
                          await _lavalinkManager.JoinAsync((Context.User as IGuildUser)?.VoiceChannel);
-            if (value == 98450) return;
+            if (value == 98450) return; // Should return the volume
 
             await player.SetVolumeAsync(value);
             await ReplyAsync("Volume now is set to " + value + "/150");

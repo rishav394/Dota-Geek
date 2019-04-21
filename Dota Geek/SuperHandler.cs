@@ -63,7 +63,7 @@ namespace Dota_Geek
             _lavalinkManager.TrackEnd += TrackEnd;
 
         }
-
+        
         private async Task TrackEnd(LavalinkPlayer player, LavalinkTrack track, string type)
         {
             if (type == "STOPPED")
